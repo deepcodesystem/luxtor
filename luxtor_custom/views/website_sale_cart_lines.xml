@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!--
+  Patch: exclude child accessory lines from the top-level cart loop.
+
+  Child lines (motor, idler, remote …) have lx_parent_line_id set.
+  Without this filter they render BOTH as a regular product row (top-level,
+  with image) AND as an accessory child block (injected by cart_lines_inherit.xml
+  XPath #4) → visual duplication.
+
+  Fix: add `and not line.lx_parent_line_id` to the existing t-if on the
+  main foreach div. Child lines are still visible through the child block
+  rendered by cart_lines_inherit.xml.
+-->
+<template id="lx_cart_lines_child_filter"
+          name="Luxtor Cart Lines — Child Line Filter"
+          inherit_id="website_sale.cart_lines"
+          active="True">
+
+  <xpath expr="//div[@id='cart_products']/div[@t-foreach='website_sale_order.website_order_line']"
+         position="attributes">
+    <!-- Replace the full t-if value, adding the child-line guard at the end. -->
+    <attribute name="t-if">(line.product_template_id.type in ('consu', 'combo')) and ('% on your order' not in (line.name or '')) and not line.lx_parent_line_id</attribute>
+  </xpath>
+
+</template>
+</data>
+</odoo>

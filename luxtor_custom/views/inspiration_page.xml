@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="view_lx_inspiration_page" model="ir.ui.view">
+      <field name="name">website.inspiration</field>
+      <field name="type">qweb</field>
+      <field name="key">website.inspiration</field>
+      <field name="arch" type="xml">
+        <t t-name="website.inspiration">
+          <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+              <section class="py-5">
+                <div class="container">
+                  <div class="text-center">
+                    <h1 class="lx_insp_title">Inspiration</h1>
+                    <p class="text-muted mt-3 mb-0">
+                      Explore Luxtor ideas by category, product, or installation space.
+                    </p>
+                    <hr class="lx_insp_divider"/>
+                  </div>
+
+                  <div class="lx_insp_filters">
+                    <div class="lx_filter_bar">
+                      <div class="lx_field">
+                        <label class="lx_label" for="lx_filter_type">Filter type</label>
+                        <select id="lx_filter_type" class="lx_select">
+                          <option value="all">All</option>
+                          <option value="category">Category</option>
+                          <option value="product">Product</option>
+                          <option value="space">Space</option>
+                        </select>
+                      </div>
+
+                      <div class="lx_field">
+                        <label id="lx_sub_label" class="lx_label" for="lx_sub_select">Category</label>
+                        <select id="lx_sub_select" class="lx_select">
+                          <option value="">All</option>
+                        </select>
+                      </div>
+
+                      <div id="lx_count_text" class="lx_meta">0 item(s)</div>
+                    </div>
+                  </div>
+
+                  <div class="lx_insp_gallery">
+                    <div id="lx_gallery_grid" class="lx_grid"/>
+                  </div>
+                </div>
+              </section>
+
+              <script id="lx_insp_boot" type="application/json">
+                <t t-raw="boot_json"/>
+              </script>
+            </div>
+          </t>
+        </t>
+      </field>
+    </record>
+  </data>
+</odoo>

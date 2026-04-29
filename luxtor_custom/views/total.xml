@@ -1,0 +1,138 @@
+<t t-name="website_sale.total">
+    <div id="cart_total" t-if="website_sale_order and website_sale_order.website_order_line" t-att-class="_cart_total_classes">
+<!-- Modern discount summary (with working remove button via JSON-RPC) -->
+<t t-set="lx_discount_summary" t-value="website_sale_order._lx_get_loyalty_summary_display()"/>
+<t t-set="lx_discount_lines" t-value="lx_discount_summary.get('lines')"/>
+<t t-set="lx_loyalty_label" t-value="lx_discount_summary.get('loyalty_label')"/>
+<t t-set="lx_discount_total" t-value="lx_discount_summary.get('discount_total', 0.0)"/>
+
+<t t-if="lx_discount_lines">
+    <style>
+        .lx-discount-list { margin-bottom: .75rem; }
+        .lx-discount-row {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:.625rem .875rem; margin-bottom:.5rem; border-radius:.45rem;
+            background:#f8fafc; border:1px dashed #d0d7de; transition:.2s ease;
+        }
+        .lx-discount-row:hover { background:#eef2f6; }
+        .lx-discount-left { display:flex; flex-direction:column; gap:.125rem; }
+        .lx-discount-label { font-size:.5rem; color:#6c757d; }
+        .lx-discount-name { font-size:.6rem;font-weight:400; color:#1e293b; }
+        .lx-discount-amount { font-weight:700; color:#198754; white-space:nowrap; }
+        .lx-remove-btn {
+            margin-left:.75rem; color:#dc3545; border:none; background:none;
+            font-size:1.2rem; line-height:1; cursor:pointer; font-weight:600;
+        }
+        .lx-remove-btn:hover { text-decoration:none; transform:scale(1.2); }
+    </style>
+
+    <!-- Tiny inline JS to remove the line via /shop/cart/update_json -->
+    
+    <script type="module"> import { jsonRpc } from "/web/static/lib/legacy/js/core/web.core.legacy.js"; // fallback path if needed // Prefer the modern import when available: try { const mod = await import("/web/assets/../@web/core/network/rpc.js"); window.__lxRpc = mod.rpc; } catch(e) { window.__lxRpc = function(url, params){ return jsonRpc(url, "call", params); }; } document.addEventListener("click", async (ev) =&gt; { const btn = ev.target.closest(".js-lx-remove-discount"); if (!btn) return; ev.preventDefault(); const row = btn.closest(".lx-discount-row"); const lineId = parseInt(row?.dataset.lineId || row?.getAttribute("data-line-id"), 10); if (!lineId) return; try { await window.__lxRpc("/shop/cart/update_json", { line_id: lineId, set_qty: 0 }); // Refresh the page (simplest) so totals and fragments are correct window.location.reload(); } catch (err) { console.error("Failed to remove discount line", err); } }); </script>
+</t>
+        <table class="table mb-0">
+            <t t-set="priority_lines" t-value="website_sale_order.website_order_line.filtered(lambda l: l.product_id and l.product_id.default_code == 'PRIORITY_SERVICE')"/>
+            <t t-set="priority_total" t-value="sum(priority_lines.mapped('price_total'))"/>
+            <t t-set="priority_is_free" t-value="bool(priority_lines) and abs(priority_total) &lt;= 1e-6"/>
+            <t t-set="install_total" t-value="sum(website_sale_order.website_order_line.filtered(lambda l: l.product_id and l.product_id.default_code == 'INSTALL_SERVICE').mapped('price_total'))"/>
+            <!-- Priority (paid even over threshold) -->
+            <tr t-if="priority_lines" id="order_priority_service">
+                <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Priority</td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0">
+                    <t t-if="priority_is_free">
+                        <span class="text-success fw-semibold">Free</span>
+                    </t>
+                    <t t-else="">
+                        <span class="monetary_field" style="white-space: nowrap;" t-out="priority_total" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                    </t>
+                </td>
+            </tr>
+            <!-- Installation: show 'Free' when threshold hit -->
+            <tr t-if="install_total and abs(install_total) &gt; 1e-6 or (lx_free_applies and any(l.product_id and l.product_id.default_code == 'INSTALL_SERVICE' for l in website_sale_order.website_order_line))" id="order_install_service">
+                <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Installation</td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0">
+                    <t t-if="lx_free_applies">
+                        <span class="text-success fw-semibold">Free</span>
+                    </t>
+                    <t t-else="">
+                        <span class="monetary_field" style="white-space: nowrap;" t-out="install_total" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                    </t>
+                </td>
+            </tr>
+            
+            <!-- Discount and Loyalty -->
+
+            <tr t-if="lx_loyalty_label" id="order_loyalty">
+                <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Loyalty</td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0">
+                    <span class="fw-semibold" t-esc="lx_loyalty_label"/>
+                </td>
+            </tr>
+
+            <tr t-if="lx_discount_lines" id="order_discount">
+                <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Discount</td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0">
+                    <span class="monetary_field" t-out="lx_discount_total" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                </td>
+            </tr>
+            
+         
+            <!-- Delivery: show '-' before carrier; otherwise 'Free' at/over threshold -->
+            <tr t-if="website_sale_order._has_deliverable_products()" id="order_delivery">
+                <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Delivery</td>
+                <td class="text-end pe-0 pt-0 pb-2 border-0">
+                    <t t-if="not website_sale_order.carrier_id">
+                        <span id="message_no_dm_set" title="Price will be updated after choosing a delivery method">-</span>
+                    </t>
+                    <t t-else="">
+                    <t t-if="lx_free_applies">
+                            <span class="text-success fw-semibold">Free</span>
+                        </t>
+                        <t t-else="">
+                            <span t-out="website_sale_order.amount_delivery" t-att-class="'monetary_field'" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                        </t>
+                    </t>
+                </td>
+            </tr>
+            
+            <!-- END Delivery: show '-' before carrier; otherwise 'Free' at/over threshold -->
+            <tr id="order_total_untaxed">
+                <td id="cart_total_subtotal" class="border-0 pb-2 ps-0 pt-0 text-start text-muted" colspan="2">
+                        Subtotal
+                </td>
+                <td class="text-end border-0 pb-2 pe-0 pt-0">
+                    <span t-field="website_sale_order.amount_untaxed" class="monetary_field" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                </td>
+            </tr>
+            <tr id="order_total_taxes">
+                <td colspan="2" class="text-muted border-0 ps-0 pt-0 pb-3">Taxes</td>
+                <td class="text-end border-0 pe-0 pt-0 pb-3">
+                    <span t-field="website_sale_order.amount_tax" class="monetary_field" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                </td>
+            </tr>
+            <tr id="order_total" class="border-top">
+                <td colspan="2" class="border-0 ps-0 pt-3">
+                    <strong>Total</strong>
+                </td>
+                <td class="text-end border-0 px-0 pt-3">
+                    <strong t-field="website_sale_order.amount_total" class="monetary_field text-end p-0" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <t t-if="request.env.user and request.env.user._is_public()">
+        <div class="alert alert-info d-flex flex-column gap-2 rounded-3 shadow-sm mt-3">
+            <div>
+                <i class="fa fa-gift text-primary me-1"/>
+                <span class="fw-semibold">Want to benefit from our promo offers?</span>
+                <span class="text-muted"> Log in or create an account to unlock discounts.</span>
+                <strong>
+                    <a href="/web/signup">
+                  Sign up
+                </a>
+                </strong>
+            </div>
+        </div>
+    </t>
+    
+</t>

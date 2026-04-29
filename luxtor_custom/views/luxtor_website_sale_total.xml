@@ -1,0 +1,303 @@
+<odoo>
+  <template
+    id="lx_website_sale_total"
+    inherit_id="website_sale.total"
+    name="Luxtor Website Sale Total"
+  >
+    <xpath expr="//table[hasclass('table')]" position="before">
+      <t
+        t-set="lx_summary_lines"
+        t-value="website_sale_order.order_line.filtered(lambda l: not l.display_type)"
+      />
+      <t
+        t-set="lx_priority_lines"
+        t-value="lx_summary_lines.filtered(lambda l: l.product_id and (l.product_id.default_code or '').upper() == 'PRIORITY_SERVICE')"
+      />
+      <t
+        t-set="priority_total"
+        t-value="sum(lx_priority_lines.mapped('price_subtotal'))"
+      />
+      <t
+        t-set="priority_is_free"
+        t-value="bool(lx_priority_lines) and abs(priority_total) &lt;= 1e-6"
+      />
+      <t
+        t-set="lx_install_lines"
+        t-value="lx_summary_lines.filtered(lambda l: l.product_id and (l.product_id.default_code or '').upper() == 'INSTALL_SERVICE')"
+      />
+      <t
+        t-set="install_total"
+        t-value="sum(lx_install_lines.mapped('price_subtotal'))"
+      />
+      <t
+        t-set="lx_discount_summary"
+        t-value="website_sale_order._lx_get_loyalty_summary_display()"
+      />
+      <t
+        t-set="lx_discount_lines"
+        t-value="lx_discount_summary.get('lines')"
+      />
+      <t
+        t-set="lx_loyalty_label"
+        t-value="lx_discount_summary.get('loyalty_label')"
+      />
+      <t
+        t-set="lx_discount_total"
+        t-value="lx_discount_summary.get('discount_total', 0.0)"
+      />
+      <t
+        t-set="lx_cart_redirect"
+        t-value="request.httprequest.path if request and request.httprequest else '/shop/cart'"
+      />
+      <t
+        t-set="lx_welcome_data"
+        t-value="request.env.user.sudo()._lx_get_welcome_coupon_display_data(order=website_sale_order, send_email=False) if request.env.user and not request.env.user._is_public() else {}"
+      />
+      <t
+        t-set="lx_welcome_coupon"
+        t-value="lx_welcome_data.get('coupon') if lx_welcome_data else False"
+      />
+      <t
+        t-set="lx_welcome_program"
+        t-value="lx_welcome_coupon.program_id if lx_welcome_coupon and 'program_id' in lx_welcome_coupon._fields else False"
+      />
+      <t
+        t-set="lx_welcome_pct"
+        t-value="lx_welcome_data.get('pct', 0.0) if lx_welcome_data else 0.0"
+      />
+      <t
+        t-set="lx_welcome_code"
+        t-value="lx_welcome_data.get('code') if lx_welcome_data else False"
+      />
+      <t
+        t-set="lx_show_welcome_coupon"
+        t-value="bool(lx_welcome_data.get('is_available')) if lx_welcome_data else False"
+      />
+      <t
+        t-set="lx_payment_summary"
+        t-value="website_sale_order._lx_payment_summary_values()"
+      />
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_delivery']" position="replace">
+      <tr t-if="website_sale_order._has_deliverable_products()" name="o_order_delivery">
+        <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">
+          Shipping
+        </td>
+        <td class="text-end pe-0 pt-0 pb-2 border-0">
+          <t t-if="not website_sale_order.carrier_id">
+            <span
+              name="o_message_no_dm_set"
+              title="Price will be updated after choosing a delivery method"
+            >
+              -
+            </span>
+          </t>
+          <t t-else="">
+            <t t-if="lx_free_applies">
+              <span class="text-success fw-semibold">Free</span>
+            </t>
+            <t t-else="">
+              <span
+                t-out="website_sale_order.amount_delivery"
+                t-att-class="'monetary_field'"
+                style="white-space: nowrap;"
+                t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+              />
+            </t>
+          </t>
+        </td>
+      </tr>
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_delivery']" position="before">
+      <tr
+        t-if="(install_total and abs(install_total) &gt; 1e-6) or lx_free_applies"
+        id="order_install_service"
+      >
+        <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">
+          Installation
+        </td>
+        <td class="text-end pe-0 pt-0 pb-2 border-0">
+          <t t-if="lx_free_applies">
+            <span class="text-success fw-semibold">Free</span>
+          </t>
+          <t t-else="">
+            <span
+              class="monetary_field"
+              style="white-space: nowrap;"
+              t-out="install_total"
+              t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+            />
+          </t>
+        </td>
+      </tr>
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_delivery']" position="after">
+      <tr t-if="lx_priority_lines" id="order_priority_service">
+        <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">
+          Priority
+        </td>
+        <td class="text-end pe-0 pt-0 pb-2 border-0">
+          <t t-if="priority_is_free">
+            <span class="text-success fw-semibold">Free</span>
+          </t>
+          <t t-else="">
+            <span
+              class="monetary_field"
+              style="white-space: nowrap;"
+              t-out="priority_total"
+              t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+            />
+          </t>
+        </td>
+      </tr>
+
+      <tr t-if="lx_loyalty_label" id="order_loyalty">
+        <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Loyalty</td>
+        <td class="text-end pe-0 pt-0 pb-2 border-0">
+          <span class="fw-semibold" t-esc="lx_loyalty_label"/>
+        </td>
+      </tr>
+
+      <tr t-if="lx_discount_lines" id="order_discount">
+        <td class="ps-0 pt-0 pb-2 border-0 text-muted" colspan="2">Discount</td>
+        <td class="text-end pe-0 pt-0 pb-2 border-0">
+          <span
+            class="monetary_field"
+            style="white-space: nowrap;"
+            t-out="lx_discount_total"
+            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+          />
+        </td>
+      </tr>
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_total']/td[1]/strong" position="replace">
+      <strong id="lx_payment_total_label">
+        <t t-if="lx_payment_summary.get('is_partial')">Amount due now</t>
+        <t t-else="">Total</t>
+      </strong>
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_total']/td[2]/strong" position="replace">
+      <t t-if="lx_payment_summary.get('is_partial')">
+        <strong
+          id="lx_payment_order_total"
+          class="monetary_field text-end p-0"
+          t-out="lx_payment_summary.get('amount_due_now', website_sale_order.amount_total)"
+          t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+        />
+      </t>
+      <t t-else="">
+        <strong
+          id="lx_payment_order_total"
+          t-field="website_sale_order.amount_total"
+          class="monetary_field text-end p-0"
+          t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+        />
+      </t>
+    </xpath>
+
+    <xpath expr="//tr[@name='o_order_total']" position="after">
+      <tr id="lx_payment_method_row" t-if="lx_payment_summary.get('choice_label')">
+        <td colspan="2" class="border-0 ps-0 pt-2 text-muted">
+          Payment method
+        </td>
+        <td class="text-end border-0 px-0 pt-2">
+          <span id="lx_payment_choice_label" class="fw-semibold">
+            <t t-esc="lx_payment_summary.get('choice_label')"/>
+          </span>
+        </td>
+      </tr>
+
+      <tr
+        id="lx_payment_order_total_row"
+        t-att-class="'d-none' if not lx_payment_summary.get('is_partial') else ''"
+      >
+        <td colspan="2" class="border-0 ps-0 pt-2 text-muted">
+          Order total
+        </td>
+        <td class="text-end border-0 px-0 pt-2">
+          <span
+            id="lx_payment_due_now_value"
+            class="monetary_field text-end p-0"
+            t-out="lx_payment_summary.get('order_total', website_sale_order.amount_total)"
+            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+          />
+        </td>
+      </tr>
+
+      <tr
+        id="lx_payment_remaining_row"
+        t-att-class="'d-none' if not lx_payment_summary.get('is_partial') else ''"
+      >
+        <td colspan="2" class="border-0 ps-0 pt-2 text-muted">
+          Remaining to pay
+        </td>
+        <td class="text-end border-0 px-0 pt-2">
+          <span
+            id="lx_payment_remaining_value"
+            class="monetary_field text-end p-0"
+            t-out="lx_payment_summary.get('remaining_to_pay', 0.0)"
+            t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"
+          />
+        </td>
+      </tr>
+    </xpath>
+
+    <xpath expr="//div[contains(@t-attf-class, 'o_cart_total')]" position="after">
+      <t t-set="lx_motor_only_debug" t-value="website_sale_order._lx_get_motor_only_debug_messages() if website_sale_order else []"/>
+
+      <div t-if="lx_motor_only_debug" class="alert alert-warning mt-3 mb-0 small">
+        <div class="fw-semibold mb-2">Motor Only debug</div>
+        <t t-foreach="lx_motor_only_debug" t-as="debug_line">
+          <div class="mb-1">
+            <t t-esc="debug_line"/>
+          </div>
+        </t>
+      </div>
+
+      <div
+        t-if="request and request.httprequest and request.httprequest.path == '/shop/payment'"
+        class="mt-4 lx-payment-submit-wrap"
+      >
+        <button
+          type="submit"
+          form="lx_payment_form"
+          class="btn btn-primary o_wsale_btn_checkout w-100 lx-payment-submit"
+        >
+          <span>Confirm</span>
+          <i class="fa fa-angle-right" aria-hidden="true"/>
+        </button>
+      </div>
+
+      <t t-if="request.env.user and not request.env.user._is_public() and lx_show_welcome_coupon">
+        <div id="lx_welcome_coupon_banner" class="alert alert-info d-flex flex-column gap-2 rounded-3 shadow-sm mt-3 lx-welcome-banner" data-lx-banner-kind="welcome-auth">
+          <div>
+            <i class="fa fa-gift text-primary me-1"/>
+            <span class="fw-semibold">Your welcome discount is ready.</span>
+            <span class="text-muted"> Apply your personal code:</span>
+            <strong class="ms-1">
+              <t t-esc="lx_welcome_data.get('code')"/>
+            </strong>
+            <span class="text-muted ms-1">for <t t-esc="lx_welcome_data.get('pct_label')"/>% off.</span>
+          </div>
+        </div>
+      </t>
+
+      <t t-elif="request.env.user and request.env.user._is_public()">
+        <div id="lx_public_welcome_coupon_banner" class="alert alert-info d-flex flex-column gap-2 rounded-3 shadow-sm mt-3 lx-welcome-banner" data-lx-banner-kind="welcome-public">
+          <div>
+            <i class="fa fa-gift text-primary me-1"/>
+            <span class="fw-semibold">Want to benefit from our promo offers?</span>
+            <span class="text-muted"> Log in or create an account to unlock your personal welcome discount.</span>
+            <a class="fw-semibold me-2" t-att-href="'/web/login?redirect=%s' % lx_cart_redirect">Log in</a>
+            <a class="fw-semibold" t-att-href="'/web/signup?redirect=%s' % lx_cart_redirect">Sign up</a>
+          </div>
+        </div>
+      </t>
+    </xpath>
+  </template>
+</odoo>

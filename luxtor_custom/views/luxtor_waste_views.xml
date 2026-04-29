@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_luxtor_waste_list" model="ir.ui.view">
+        <field name="name">luxtor.waste.list</field>
+        <field name="model">luxtor.waste</field>
+        <field name="arch" type="xml">
+            <list string="Waste Remnants">
+                <field name="production_id"/>
+                <field name="product_id"/>
+                <field name="initial_waste_type"/>
+                <field name="waste_type"/>
+                <field name="location_id"/>
+                <field name="lot_id"/>
+                <field name="width_m"/>
+                <field name="height_m"/>
+                <field name="area_m2"/>
+                <field name="qty"/>
+                <field name="is_consumed" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_luxtor_waste_form" model="ir.ui.view">
+        <field name="name">luxtor.waste.form</field>
+        <field name="model">luxtor.waste</field>
+        <field name="arch" type="xml">
+            <form string="Waste Remnant">
+                <header>
+                    <button name="action_process_waste"
+                            type="object"
+                            string="Process"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="production_id" readonly="1"/>
+                            <field name="product_id"/>
+                            <field name="waste_type"/>
+                            <field name="initial_waste_type"/>
+                        </group>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="lot_id"/>
+                            <field name="scrap_id" string="Scrap Order"/>
+                            <field name="move_id" string="Creation Move"/>
+                        </group>
+                    </group>
+
+                    <group string="Dimensions and Quantity">
+                        <group>
+                            <field name="width_m"/>
+                            <field name="height_m"/>
+                        </group>
+                        <group>
+                            <field name="area_m2" readonly="1"/>
+                            <field name="qty"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_luxtor_waste_search" model="ir.ui.view">
+        <field name="name">luxtor.waste.search</field>
+        <field name="model">luxtor.waste</field>
+        <field name="arch" type="xml">
+            <search string="Waste Remnants">
+                <field name="production_id"/>
+                <field name="product_id"/>
+                <field name="waste_type"/>
+                <field name="location_id"/>
+                <field name="lot_id"/>
+                <field name="is_consumed"/>
+
+                <filter name="filter_remnant"
+                        string="Remnant"
+                        domain="[('waste_type', '=', 'remnant')]"/>
+                <filter name="filter_roll_end"
+                        string="Roll End"
+                        domain="[('waste_type', '=', 'roll_end')]"/>
+                <filter name="filter_scrap"
+                        string="Scrap"
+                        domain="[('waste_type', '=', 'scrap')]"/>
+                <filter name="filter_not_consumed"
+                        string="Available"
+                        domain="[('is_consumed', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action window for luxtor.waste -->
+    <record id="action_luxtor_waste" model="ir.actions.act_window">
+        <field name="name">Waste Remnants</field>
+        <field name="res_model">luxtor.waste</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_luxtor_waste_list"/>
+        <field name="search_view_id" ref="view_luxtor_waste_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Product template form: smart button -->
+    <record id="view_product_template_form_inherit_luxtor_waste" model="ir.ui.view">
+        <field name="name">product.template.form.luxtor.waste</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//div[@name='button_box']" position="inside">
+                <button type="action"
+                        class="oe_stat_button"
+                        name="%(luxtor_custom.action_luxtor_waste)d"
+                        string="Waste Remnants"
+                        icon="fa-recycle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Product variant form: smart button -->
+    <record id="view_product_product_form_inherit_luxtor_waste" model="ir.ui.view">
+        <field name="name">product.product.form.luxtor.waste</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//div[@name='button_box']" position="inside">
+                <button type="action"
+                        class="oe_stat_button"
+                        name="%(luxtor_custom.action_luxtor_waste)d"
+                        string="Waste Remnants"
+                        icon="fa-recycle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Stock location form: smart button -->
+    <record id="view_stock_location_form_inherit_luxtor_waste" model="ir.ui.view">
+        <field name="name">stock.location.form.luxtor.waste</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//div[@name='button_box']" position="inside">
+                <button type="action"
+                        class="oe_stat_button"
+                        name="%(luxtor_custom.action_luxtor_waste)d"
+                        string="Waste"
+                        icon="fa-recycle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Show the "Treasure Location" flag on the location form -->
+    <record id="view_stock_location_form_luxtor" model="ir.ui.view">
+        <field name="name">stock.location.form.luxtor</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+            <!-- Put the checkbox just after the 'usage' field -->
+            <xpath expr="//field[@name='usage']" position="after">
+                <field name="is_lx_treasure"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
+

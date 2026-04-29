@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- luxtor_custom/views/res_config_settings_views.xml -->
+    <record id="view_res_config_settings_luxtor_params" model="ir.ui.view">
+        <field name="name">res.config.settings.view.luxtor.params</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Inject inside General Settings -->
+            <xpath expr="//block[@name='users_setting_container']" position="before">
+
+                <block title="Luxtor Parameters" name="luxtor_params">
+
+                    <setting id="lx_browser_factor_pct_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Browser Markup</span>
+                            <field name="lx_browser_factor_pct" class="oe_inline"/>
+                            <span>%</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_quantity_cap_pct_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Quantity Cap</span>
+                            <field name="lx_quantity_cap_pct" class="oe_inline"/>
+                            <span>%</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_new_customer_pct_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">New Customer</span>
+                            <field name="lx_new_customer_pct" class="oe_inline"/>
+                            <span>%</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_welcome_reward_pct_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Welcome Reward</span>
+                            <field name="lx_welcome_reward_pct" class="oe_inline"/>
+                            <span>%</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_refer_earn_pct_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Refer &amp; Earn</span>
+                            <field name="lx_refer_earn_pct" class="oe_inline"/>
+                            <span>%</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_order_limit_amount_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Order Limit</span>
+                            <field name="lx_order_limit_amount" class="oe_inline"/>
+                            <span>DH</span>
+                        </div>
+                    </setting>
+
+                    <setting id="lx_free_amount_order_setting">
+                        <div class="o_row">
+                            <span class="o_form_label">Free Amount Order</span>
+                            <field name="lx_free_amount_order" class="oe_inline"/>
+                            <span>DH</span>
+                        </div>
+                    </setting>
+                </block>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

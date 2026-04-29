@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--
+    V19 checkout steps are website.checkout.step records (not Python overrides).
+    Each website gets its own copy of these records via _create_checkout_steps() on install.
+
+    Sequences:
+      0   → /shop/cart       (Review Order)
+      125 → /shop/service    (Services) ← our custom step
+      250 → /shop/checkout   (Address)
+      999 → /shop/payment    (Payment)
+  -->
+  <data noupdate="1">
+
+    <!-- Generic (website_id=False) template record — copied per-website on install -->
+    <record id="checkout_step_services" model="website.checkout.step">
+      <field name="name">Services</field>
+      <field name="sequence">125</field>
+      <field name="step_href">/shop/service</field>
+      <field name="main_button_label">Continue</field>
+      <field name="back_button_label">Back to services</field>
+      <field name="is_published" eval="True"/>
+    </record>
+
+  </data>
+
+  <!-- Rename built-in V19 steps and ensure Services step exists.
+       noupdate="0" so this runs on every module upgrade. -->
+  <data noupdate="0">
+    <function model="website" name="_lx_ensure_services_step">
+      <value model="website" search="[]"/>
+    </function>
+  </data>
+</odoo>

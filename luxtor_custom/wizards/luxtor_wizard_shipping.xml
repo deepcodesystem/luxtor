@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record id="view_sale_order_shipping_wizard_form" model="ir.ui.view">
+      <field name="name">sale.order.shipping.wizard.form</field>
+      <field name="model">sale.order.shipping.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Add Shipping" create="false" edit="false">
+          <sheet>
+            <group>
+              <field name="currency_id" invisible="1"/>
+              <field name="shipping_method" widget="radio"
+                     options="{'horizontal': true}"/>
+              <field name="city_id"
+                     string="City / Zone"
+                     options="{'no_create': True}"
+                     invisible="shipping_method != 'standard'"
+                     required="shipping_method == 'standard'"/>
+              <field name="price"
+                     string="Computed Price"
+                     widget="monetary"
+                     options="{'currency_field': 'currency_id'}"
+                     readonly="1"/>
+              <field name="free_note" readonly="1" nolabel="1" invisible="1"/>
+              <label for="is_free" string="Free Delivery" invisible="1"/>
+              <field name="is_free" invisible="1"/>
+            </group>
+            <div class="alert alert-success mt-3 mb-0" invisible="not is_free">
+              Delivery is free for this order because the eligible total reached the configured free-shipping threshold.
+            </div>
+            <footer>
+              <button string="Confirm" type="object" name="action_confirm"
+                      class="btn btn-primary"/>
+              <button string="Discard" class="btn btn-secondary" special="cancel"/>
+            </footer>
+          </sheet>
+        </form>
+      </field>
+    </record>
+  </data>
+</odoo>

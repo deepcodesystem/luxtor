@@ -1,0 +1,312 @@
+/* =============================================================
+   CART — Offer box, accessory tooltips, cart line hide
+   ============================================================= */
+
+/* ------------------------------------------------------------------
+   Offer box (e.g. free-delivery reward message)
+------------------------------------------------------------------ */
+.lx-offer-title {
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.lx-offer-box {
+  background: linear-gradient(180deg, #eff6ff 0%, #e0f2fe 100%);
+  border: 1px solid rgba(56, 189, 248, .45);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: #0f172a;
+}
+
+.lx-offer-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #0f172a;
+}
+
+.lx-offer-icon {
+  color: #0284c7;
+  font-size: 20px;
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+.lx-offer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lx-offer-main {
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.lx-offer-sub {
+  font-size: 14px;
+  color: #0f172a;
+  opacity: .85;
+  line-height: 1.4;
+}
+
+.lx-offer-learn .lx-offer-link {
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: underline;
+  color: #0369a1;
+  transition: color 0.2s ease;
+}
+.lx-offer-learn .lx-offer-link:hover { color: #075985; }
+
+@media (max-width: 576px) {
+  .lx-offer-box  { padding: 12px; }
+  .lx-offer-main { font-size: 16px; }
+  .lx-offer-sub  { font-size: 14px; }
+}
+
+/* ------------------------------------------------------------------
+   Force-hide a cart product row (used by JS to hide accessories)
+------------------------------------------------------------------ */
+.o_cart_product.lx-force-hide { display: none !important; }
+
+/* allow overflow for tooltip cards */
+#cart_products,
+.o_cart_product { overflow: visible !important; }
+
+/* ------------------------------------------------------------------
+   Cart product tooltip — ? button + floating card
+------------------------------------------------------------------ */
+.lx-cart-tipwrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lx-cart-q {
+  font-size: 16px;
+  font-weight: 400;
+  color: #c89b2c;
+  cursor: help;
+  line-height: 1;
+  margin-left: 3px;
+  opacity: .85;
+  transition: opacity .15s ease;
+}
+.lx-cart-tipwrap:hover .lx-cart-q { opacity: 1; }
+
+.lx-cart-tipbox {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 14px);
+  transform: translateY(-50%);
+  min-width: 560px;
+  max-width: 800px;
+  background: linear-gradient(180deg, #fffef9 0%, #f7f1dc 100%);
+  color: #1f2937;
+  border: 1px solid rgba(200,155,44,.35);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.12), 0 2px 6px rgba(0,0,0,.06);
+  padding: 16px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 9999;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Arrow */
+.lx-cart-tipbox::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  background: #fffef9;
+  border-left: 1px solid rgba(200,155,44,.35);
+  border-bottom: 1px solid rgba(200,155,44,.35);
+}
+
+.lx-cart-tipwrap:hover .lx-cart-tipbox {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Bullet item */
+.lx-cart-tipbox .lx-bullet {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+}
+.lx-cart-tipbox .lx-bullet::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  background: #6b7280;
+  border-radius: 50%;
+}
+
+/* Tip line with "i" info circle */
+.lx-cart-tipbox .lx-tipline {
+  position: relative;
+  margin-top: 12px;
+  padding-top: 12px;
+  padding-left: 26px;
+  border-top: 1px dashed rgba(200,155,44,.35);
+  color: #374151;
+}
+.lx-cart-tipbox .lx-tipline::before {
+  content: "i";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  background: rgba(200,155,44,.18);
+}
+
+/* ------------------------------------------------------------------
+   Dimension badge on cart lines  [W m × H m]
+   Matches V18 style: own line, medium weight, slightly muted
+------------------------------------------------------------------ */
+.lx-dims-line {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #374151;
+  line-height: 1.4;
+}
+
+/* ------------------------------------------------------------------
+   Accessory child rows + group separation
+   ─────────────────────────────────────────────────────────────────
+   Parent .o_cart_product + .lx-acc-block = one visual group.
+   :has() kills the parent's native border-bottom so the group is
+   sealed by the acc-block's own background/radius, then the
+   margin-bottom creates inter-group breathing room.
+------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------
+   Product group card
+   JS (groupCartLines) wraps each .o_cart_product + its .lx-acc-block
+   in a .lx-product-group using backend line IDs — guaranteed correct
+   grouping regardless of DOM order.
+   No overflow:hidden so tooltips (position:absolute) stay visible.
+------------------------------------------------------------------ */
+
+/* Card wrapper */
+.lx-product-group {
+  margin-bottom: 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Top section — parent blind row */
+.lx-product-group > .o_cart_product {
+  background: #fff;
+  border: 1.5px solid #e2e8f0 !important;
+  border-bottom: none !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 1rem !important;
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Bottom section — accessory block */
+.lx-product-group > .lx-acc-block {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-top: 1px dashed #cbd5e1;
+  border-radius: 0 0 12px 12px;
+  padding: 0.5rem 1rem 1rem;
+  margin-bottom: 0;
+}
+
+/* Standalone blind (no accessories) — own card */
+.o_cart_product:not(.lx-product-group > .o_cart_product) {
+  background: #fff;
+  border: 1.5px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  margin-bottom: 1.25rem !important;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  overflow: visible !important;
+}
+
+/* Fallback acc-block outside any group */
+.lx-acc-block:not(.lx-product-group > .lx-acc-block) {
+  background: #f8fafc;
+  border-radius: 0 0 12px 12px;
+  padding: 0.5rem 0.75rem 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Each accessory row */
+.lx_accessory_line {
+  color: var(--bs-body-color);
+  font-size: 0.9rem;
+}
+/* Thin divider between consecutive accessory rows */
+.lx_accessory_line + .lx_accessory_line {
+  border-top: 1px solid #e9ecef;
+}
+
+/* Fixed image slot — aligned even when no image */
+.lx-acc-thumb {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lx-acc-thumb img {
+  max-width: 48px;
+  max-height: 48px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+/* Placeholder when no image */
+.lx-acc-no-img {
+  width: 48px;
+  height: 48px;
+  background: #e9ecef;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-size: 18px;
+}
+
+/* Plain qty number */
+.lx-acc-qty-label {
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Price — normal weight */
+.lx-acc-price {
+  min-width: 72px;
+  white-space: nowrap;
+  font-weight: 400;
+}

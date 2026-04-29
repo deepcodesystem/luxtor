@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="lx_products_replace" inherit_id="website_sale.products">
+    <xpath expr="." position="replace">
+      <t name="Products" t-name="website_sale.products">
+        <t t-call="website.layout">
+          <t t-set="additional_title" t-value="category.name"/>
+          <t t-set="grid_block_name">Grid</t>
+          <t t-set="product_block_name">Product</t>
+
+          <t t-set="navClass" t-valuef="light"/>
+
+          <t t-set="opt_wsale_categories" t-value="is_view_active('website_sale.products_categories')"/>
+          <t t-set="opt_wsale_attributes" t-value="is_view_active('website_sale.products_attributes')"/>
+          <t t-set="opt_wsale_filter_price" t-value="is_view_active('website_sale.filter_products_price')"/>
+          <t t-set="opt_wsale_filter_tags" t-value="is_view_active('website_sale.filter_products_tags')"/>
+
+          <t t-set="opt_wsale_categories_top" t-value="is_view_active('website_sale.products_categories_top')"/>
+          <t t-set="opt_wsale_attributes_top" t-value="is_view_active('website_sale.products_attributes_top')"/>
+
+          <t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)"/>
+          <t t-set="website_sale_sortable" t-value="website._get_product_sort_mapping()"/>
+
+          <t t-set="hasLeftColumn" t-value="opt_wsale_categories or opt_wsale_attributes"/>
+
+          <t t-set="isFilteringByPrice" t-if="opt_wsale_filter_price"
+             t-value="float_round(available_min_price, 2) != float_round(min_price, 2) or float_round(available_max_price, 2) != float_round(max_price, 2)"/>
+          <t t-set="hasPricelistDropdown" t-value="website_sale_pricelists and len(website_sale_pricelists)&gt;1"/>
+          <t t-set="isSortingBy" t-value="[sort for sort in website_sale_sortable if sort[0]==request.params.get('order', '')]"/>
+
+          <div id="wrap" class="js_sale o_wsale_products_page">
+            <div class="oe_structure oe_empty oe_structure_not_nearest" id="oe_structure_website_sale_products_1"/>
+            <div class="container oe_website_sale pt-2">
+              <div class="row o_wsale_products_main_row align-items-start flex-nowrap">
+
+                <aside t-if="hasLeftColumn" id="products_grid_before" class="d-none d-lg-block position-sticky col-3 px-3 clearfix">
+
+                  <!-- LEFT RAIL -->
+                  <div class="o_wsale_products_grid_before_rail vh-100 ms-n2 mt-n2 pt-2 p-lg-2 pb-lg-5 ps-2 overflow-y-scroll lx_side">
+
+                    <style>
+                      .lx_side{padding:10px 16px 16px}
+                      .lx_block{margin:0 0 16px}
+                      .lx_hdr{
+                        display:flex;align-items:center;justify-content:space-between;
+                        padding:8px 8px;margin:0 0 10px;
+                        font-size:11px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;
+                        color:#6b7280
+                      }
+                      .lx_toggle{
+                        width:24px;height:24px;border-radius:6px;
+                        border:1px solid #e5e7eb;background:#fff;
+                        display:flex;align-items:center;justify-content:center;
+                        transition:background .15s ease,border-color .15s ease
+                      }
+                      .lx_toggle:hover{background:#f9fafb;border-color:#d1d5db}
+                      .lx_chev{font-size:14px;color:#6b7280;line-height:1;transition:transform .15s ease}
+                      .lx_toggle[aria-expanded="false"] .lx_chev{transform:rotate(-90deg)}
+                      .lx_body{padding:0 8px 6px 18px}
+
+                      .lx_row_link{
+                        display:block;padding:9px 12px;border-radius:10px;margin-bottom:6px;
+                        font-size:14px;font-weight:600;color:#111827;
+                        background:#f9fafb;border:1px solid #e5e7eb;
+                        text-decoration:none;
+                        transition:background .15s ease,border-color .15s ease
+                      }
+                      .lx_row_link:hover{background:#f3f4f6;border-color:#d1d5db;text-decoration:none}
+                      .lx_row_link.active{background:#eef2f7;border-color:#c7cdd6;font-weight:700}
+
+                      .lx_colors_row{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 2px}
+                      .lx_color_dot{
+                        width:16px;height:16px;border-radius:999px;display:inline-block;
+                        border:1px solid #d1d5db;background:#e5e7eb;
+                        text-decoration:none
+                      }
+                      .lx_color_dot.active{outline:2px solid #111827;outline-offset:2px}
+                    </style>
+
+                    <!-- Params -->
+                    <t t-set="lx_interest" t-value="request.params.get('lx_interest') or ''"/>
+                    <t t-set="lx_location" t-value="request.params.get('lx_location') or ''"/>
+                    <t t-set="lx_color" t-value="request.params.get('lx_color') or ''"/>
+
+                    <!-- Models -->
+                    <t t-set="Color" t-value="request.env['lx.product.color'].sudo()"/>
+                    <t t-set="colors" t-value="Color.search([])"/>
+
+                    <t t-set="Space" t-value="request.env['luxtor.installation.space'].sudo()"/>
+                    <t t-set="spaces" t-value="Space.search([])"/>
+
+                    <t t-set="Cat" t-value="request.env['product.public.category'].sudo()"/>
+
+                    <!-- SHOP BY INTEREST -->
+                    <div class="lx_block">
+                      <div class="lx_hdr">
+                        <span>Shop by interest</span>
+                        <button class="lx_toggle" type="button" data-bs-toggle="collapse" data-bs-target="#lx_blk_interest" aria-expanded="true" aria-controls="lx_blk_interest">
+                          <span class="lx_chev">›</span>
+                        </button>
+                      </div>
+                      <div id="lx_blk_interest" class="collapse show">
+                        <div class="lx_body">
+                          <a t-att-href="keep('/shop', lx_interest='', lx_location=0, lx_color=0)" t-att-class="'lx_row_link ' + ('' if lx_interest else 'active')">All</a>
+                          <a t-att-href="keep('/shop', lx_interest='new_in')" t-att-class="'lx_row_link ' + ('active' if lx_interest == 'new_in' else '')">New In</a>
+                          <a t-att-href="keep('/shop', lx_interest='weekly_deal')" t-att-class="'lx_row_link ' + ('active' if lx_interest == 'weekly_deal' else '')">Weekly Deal</a>
+                          <a t-att-href="keep('/shop', lx_interest='bestseller')" t-att-class="'lx_row_link ' + ('active' if lx_interest == 'bestseller' else '')">Bestsellers</a>
+                          <a t-att-href="keep('/shop', lx_interest='trending')" t-att-class="'lx_row_link ' + ('active' if lx_interest == 'trending' else '')">Trending now</a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- SHOP BY CATEGORY -->
+                    <div class="lx_block">
+                      <div class="lx_hdr">
+                        <span>Shop by category</span>
+                        <button class="lx_toggle" type="button" data-bs-toggle="collapse" data-bs-target="#lx_blk_cat" aria-expanded="true" aria-controls="lx_blk_cat">
+                          <span class="lx_chev">›</span>
+                        </button>
+                      </div>
+
+                      <div id="lx_blk_cat" class="collapse show">
+                        <div class="lx_body">
+                          <a t-att-href="keep('/shop', category=0)" t-att-class="'lx_row_link ' + ('' if category else 'active')">All Products</a>
+
+                          <t t-set="top_cats" t-value="Cat.search([('parent_id', '=', False), ('name', 'not ilike', 'all')], order='sequence, name')"/>
+                          <t t-foreach="top_cats" t-as="c">
+                            <a t-att-href="keep('/shop/category/' + slug(c), category=0)"
+                               t-att-class="'lx_row_link ' + (category and category.parent_path and ('/%s/' % c.id) in category.parent_path and 'active' or '')">
+                              <t t-esc="c.name"/>
+                            </a>
+                          </t>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- SHOP BY LOCATION -->
+                    <div class="lx_block">
+                      <div class="lx_hdr">
+                        <span>Shop by location</span>
+                        <button class="lx_toggle" type="button" data-bs-toggle="collapse" data-bs-target="#lx_blk_loc" aria-expanded="true" aria-controls="lx_blk_loc">
+                          <span class="lx_chev">›</span>
+                        </button>
+                      </div>
+
+                      <div id="lx_blk_loc" class="collapse show">
+                        <div class="lx_body">
+                          <a t-att-href="keep('/shop', lx_location=0)" t-att-class="'lx_row_link ' + ('' if lx_location else 'active')">All</a>
+
+                          <t t-foreach="spaces" t-as="sp">
+                            <a t-att-href="keep('/shop', lx_location=sp.id)"
+                               t-att-class="'lx_row_link ' + ('active' if lx_location and str(sp.id) == str(lx_location) else '')">
+                              <t t-esc="sp.name"/>
+                            </a>
+                          </t>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- SHOP BY COLOR (dots only, no default all) -->
+                    <div class="lx_block">
+                      <div class="lx_hdr">
+                        <span>Shop by color</span>
+                        <button class="lx_toggle" type="button" data-bs-toggle="collapse" data-bs-target="#lx_blk_color" aria-expanded="true" aria-controls="lx_blk_color">
+                          <span class="lx_chev">›</span>
+                        </button>
+                      </div>
+
+                      <div id="lx_blk_color" class="collapse show">
+                        <div class="lx_body">
+                          <div class="lx_colors_row">
+                            <t t-foreach="colors" t-as="c">
+                              <a t-att-href="keep('/shop', lx_color=c.id)"
+                                 t-att-title="c.name"
+                                 t-att-class="'lx_color_dot ' + ('active' if lx_color and str(c.id) == str(lx_color) else '')"
+                                 t-attf-style="background: {{ c.color_hex or '#e5e7eb' }};">
+                              </a>
+                            </t>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- hide original Odoo filters -->
+                    <div style="display:none;" class="o_wsale_products_grid_before_rail vh-100 ms-n2 mt-n2 pt-2 p-lg-2 pb-lg-5 ps-2 overflow-y-scroll">
+                      <t t-set="is_sidebar_collapsible" t-value="is_view_active('website_sale.products_categories_list_collapsible')"/>
+                      <div t-if="opt_wsale_categories" t-att-class="'products_categories' + (' accordion accordion-flush' if is_sidebar_collapsible else ' mb-3')">
+                        <t t-call="website_sale.products_categories_list"/>
+                      </div>
+                      <div t-attf-class="products_attributes_filters d-empty-none {{opt_wsale_categories and 'border-top'}}"/>
+                      <t t-if="opt_wsale_filter_price and opt_wsale_attributes" t-call="website_sale.filter_products_price">
+                        <t t-set="_classes" t-valuef="{{is_sidebar_collapsible and 'accordion accordion-flush'}} {{is_sidebar_collapsible and (opt_wsale_categories or len(attributes) &gt; 0) and 'border-top'}}"/>
+                      </t>
+                    </div>
+
+                  </div>
+                </aside>
+
+                <div id="products_grid" t-attf-class="#{'o_wsale_layout_list' if layout_mode == 'list' else ''} {{'col-lg-9' if hasLeftColumn else 'col-12'}}">
+
+                  <style>
+                    .lx_shop_tabs_wrap{padding:10px 0 12px}
+                    .lx_shop_tabs_title{text-align:center;font-weight:800;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:rgba(17,24,39,.55);margin-bottom:12px}
+                    .lx_shop_tabs{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+                    .lx_shop_tab{border-radius:12px;padding:12px 18px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;border:1px solid rgba(17,24,39,.16);background:rgba(17,24,39,.04);color:#111827;text-decoration:none;box-shadow:none}
+                    .lx_shop_tab:hover{border-color:rgba(17,24,39,.28);background:rgba(17,24,39,.06);text-decoration:none}
+                    .lx_shop_tab.active{background:#111827!important;border-color:#111827!important;color:#fff!important}
+                  </style>
+
+                  <t t-set="Cat" t-value="request.env['product.public.category'].sudo()"/>
+                  <t t-set="c_curtains" t-value="Cat.search([('name', 'ilike', 'CURTAINS')], limit=1)"/>
+                  <t t-set="c_blinds" t-value="Cat.search([('name', 'ilike', 'BLINDS')], limit=1)"/>
+                  <t t-set="c_awnings" t-value="Cat.search([('name', 'ilike', 'AWNINGS')], limit=1)"/>
+                  <t t-set="c_accessories" t-value="Cat.search([('name', 'ilike', 'ACCESSORIES')], limit=1)"/>
+
+                  <section class="lx_shop_tabs_wrap">
+                    <div class="container">
+                      <div class="lx_shop_tabs_title">TENDANCES EN VOGUE</div>
+                      <div class="lx_shop_tabs" role="tablist">
+                        <a t-att-href="c_curtains and keep('/shop/category/' + slug(c_curtains), category=0) or '/shop'"
+                           t-att-class="'lx_shop_tab ' + ('active' if category and c_curtains and category.parent_path and ('/%s/' % c_curtains.id) in category.parent_path else '')">
+                          CURTAINS
+                        </a>
+                        <a t-att-href="c_blinds and keep('/shop/category/' + slug(c_blinds), category=0) or '/shop'"
+                           t-att-class="'lx_shop_tab ' + ('active' if category and c_blinds and category.parent_path and ('/%s/' % c_blinds.id) in category.parent_path else '')">
+                          BLINDS
+                        </a>
+                        <a t-att-href="c_awnings and keep('/shop/category/' + slug(c_awnings), category=0) or '/shop'"
+                           t-att-class="'lx_shop_tab ' + ('active' if category and c_awnings and category.parent_path and ('/%s/' % c_awnings.id) in category.parent_path else '')">
+                          AWNINGS
+                        </a>
+                        <a t-att-href="c_accessories and keep('/shop/category/' + slug(c_accessories), category=0) or '/shop'"
+                           t-att-class="'lx_shop_tab ' + ('active' if category and c_accessories and category.parent_path and ('/%s/' % c_accessories.id) in category.parent_path else '')">
+                          ACCESSORIES
+                        </a>
+                      </div>
+                    </div>
+                  </section>
+
+                  <t t-call="website_sale.products_breadcrumb">
+                    <t t-set="_classes" t-valuef="d-none d-lg-flex w-100 p-0 small"/>
+                  </t>
+
+                  <h1 t-if="category"><t t-esc="category.name"/></h1>
+
+                  <t t-if="category">
+                    <t t-set="editor_msg">
+                      Drag building blocks here to customize the header for "<t t-esc="category.name"/>" category.
+                    </t>
+                    <div class="mb16" id="category_header" t-att-data-editor-message="editor_msg" t-field="category.website_description"/>
+                  </t>
+
+                  <div class="products_header btn-toolbar flex-nowrap align-items-center justify-content-between gap-3 mb-3">
+                    <t t-if="is_view_active('website_sale.search')" t-call="website_sale.search">
+                      <t t-set="search" t-value="original_search or search"/>
+                      <t t-set="_form_classes" t-valuef="d-lg-inline {{'d-inline' if not category else 'd-none'}}"/>
+                    </t>
+
+                    <t t-call="website_sale.pricelist_list">
+                      <t t-set="_classes" t-valuef="d-none d-lg-inline"/>
+                    </t>
+
+                    <t t-if="is_view_active('website_sale.sort')" t-call="website_sale.sort">
+                      <t t-set="_classes" t-valuef="d-none me-auto d-lg-inline-block"/>
+                    </t>
+
+                    <div t-if="category" class="d-flex align-items-center d-lg-none me-auto o_not_editable">
+                      <t t-if="not category.parent_id" t-set="backUrl" t-valuef="/shop"/>
+                      <t t-else="" t-set="backUrl" t-value="keep('/shop/category/' + slug(category.parent_id), category=0)"/>
+
+                      <a t-attf-class="btn btn-{{navClass}} me-2" t-att-href="category.parent_id and keep('/shop/category/' + slug(category.parent_id), category=0) or '/shop'">
+                        <i class="fa fa-angle-left"/>
+                      </a>
+                      <h4 t-out="category.name" class="mb-0 me-auto"/>
+                    </div>
+
+                    <t t-if="is_view_active('website_sale.add_grid_or_list_option')" t-call="website_sale.add_grid_or_list_option">
+                      <t t-set="_classes" t-valuef="d-flex"/>
+                    </t>
+
+                    <button t-if="is_view_active('website_sale.sort') or opt_wsale_categories or opt_wsale_attributes or opt_wsale_attributes_top"
+                            t-attf-class="btn btn-{{navClass}} position-relative {{not opt_wsale_attributes_top and 'd-lg-none'}}"
+                            data-bs-toggle="offcanvas" data-bs-target="#o_wsale_offcanvas">
+                      <i class="fa fa-sliders"/>
+                      <span t-if="isFilteringByPrice or attrib_set or tags"
+                            t-attf-class="position-absolute top-0 start-100 translate-middle border border-{{navClass}} rounded-circle bg-danger p-1">
+                        <span class="visually-hidden">filters active</span>
+                      </span>
+                    </button>
+                  </div>
+
+                  <div t-if="original_search and products" class="alert alert-warning mt8">
+                    No results found for '<span t-esc="original_search"/>'. Showing results for '<span t-esc="search"/>'.
+                  </div>
+
+                  <div t-if="products" class="o_wsale_products_grid_table_wrapper pt-3 pt-lg-0">
+                    <t t-set="grid_md_allow_custom_cols" t-value="hasLeftColumn"/>
+                    <t t-set="grid_md_use_3col" t-value="not hasLeftColumn and ppr == 4"/>
+
+                    <section id="o_wsale_products_grid"
+                             t-attf-class="o_wsale_products_grid_table grid {{grid_md_allow_custom_cols and 'o_wsale_products_grid_table_md'}}"
+                             t-attf-style="--o-wsale-products-grid-gap: {{gap}}; --o-wsale-ppr: {{ppr}}; --o-wsale-ppg: {{ppg}}"
+                             t-att-data-ppg="ppg" t-att-data-ppr="ppr"
+                             t-att-data-default-sort="website.shop_default_sort"
+                             t-att-data-name="grid_block_name">
+                      <t t-foreach="bins" t-as="tr_product">
+                        <t t-foreach="tr_product" t-as="td_product">
+                          <t t-if="td_product">
+                            <t t-set="col_height" t-value="td_product['y']"/>
+                            <t t-set="col_width" t-value="12 // ppr * td_product['x']"/>
+                            <t t-set="col_class_lg" t-value="'g-col-lg-' + str(col_width)"/>
+                            <t t-set="col_class_md" t-value="grid_md_allow_custom_cols and ('g-col-md-' + str(col_width)) or grid_md_use_3col and 'g-col-md-4' or 'g-col-md-6'"/>
+                            <t t-set="col_is_stretched" t-value="(td_product['x'] &gt;= td_product['y'] * 2)"/>
+                            <t t-set="col_is_custom_portrait" t-value="not col_is_stretched and (col_height &gt; td_product['x'])"/>
+                            <div t-attf-class="oe_product {{col_is_custom_portrait and 'oe_product_custom_portrait'}} g-col-6 {{col_class_md}} {{col_class_lg}} {{col_is_stretched and 'oe_product_size_stretch'}}"
+                                 t-attf-style="--o-wsale-products-grid-product-col-height: {{col_height}};"
+                                 t-att-data-ribbon-id="td_product['ribbon'].id"
+                                 t-att-data-colspan="td_product['x'] != 1 and td_product['x']"
+                                 t-att-data-rowspan="td_product['y'] != 1 and td_product['y']"
+                                 t-att-data-name="product_block_name">
+                              <div t-attf-class="o_wsale_product_grid_wrapper position-relative h-100 o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">
+                                <t t-call="website_sale.products_item">
+                                  <t t-set="product" t-value="td_product['product']"/>
+                                </t>
+                              </div>
+                            </div>
+                          </t>
+                        </t>
+                      </t>
+                    </section>
+                  </div>
+
+                  <div t-else="" class="text-center text-muted mt128 mb256">
+                    <t t-if="not search">
+                      <h3 class="mt8">No product defined</h3>
+                      <p t-if="category">No product defined in this category.</p>
+                    </t>
+                    <t t-else="">
+                      <h3 class="mt8">No results</h3>
+                      <p>No results for "<strong t-esc="search"/>"<t t-if="category"> in category "<strong t-esc="category.display_name"/>"</t>.</p>
+                    </t>
+                    <p t-ignore="true" groups="sales_team.group_sale_manager">Click <i>'New'</i> in the top-right corner to create your first product.</p>
+                  </div>
+
+                  <div class="products_pager d-flex justify-content-center pt-5 pb-3">
+                    <t t-call="website.pager"/>
+                  </div>
+
+                  <t t-if="category">
+                    <t t-set="footer_editor_message">
+                      Drag building blocks here to customize the footer for "<t t-esc="category.name"/>" category.
+                    </t>
+                    <div class="mb16" id="category_footer" t-att-data-editor-message="footer_editor_message" t-field="category.website_footer"/>
+                  </t>
+
+                </div>
+              </div>
+
+              <t t-call="website_sale.o_wsale_offcanvas"/>
+            </div>
+            <div class="oe_structure oe_empty oe_structure_not_nearest" id="oe_structure_website_sale_products_2"/>
+          </div>
+        </t>
+      </t>
+    </xpath>
+  </template>
+</odoo>

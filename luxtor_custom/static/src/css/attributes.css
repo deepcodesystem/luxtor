@@ -1,0 +1,705 @@
+
+/* ================================
+   Style for color attribute options
+   ================================ */
+.css_attribute_color,
+.css_attribute input[type="radio"] + label:not(.css_attribute_color):not(.o_product_variant_img) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px !important; /* reduce padding so image can breathe */
+  min-height: 42px;   min-width: 120px;
+  background-position: center;
+  border: 2px solid #86868B !important; /* gris plus fort */
+  border-radius: 12px !important;
+  cursor: pointer;
+  margin-right: 4px; /* Adjust as necessary for alignment */
+  transition: border-color .2s ease, box-shadow .2s ease;
+  /* ensure consistency with other options */
+}
+
+/* Hover state for color options */
+.css_attribute_color:hover,
+.css_attribute input[type="radio"] + label:hover:not(.css_attribute_color):not(.o_product_variant_img) {
+  border-color: #0071E3 !important; /* contour bleu au survol */
+  /* box-shadow: 0 0 0 3px rgba(0, 113, 227, .15) !important; */
+}
+
+/* Selected / active for color options */
+.css_attribute_color.active,
+.css_attribute input[type="radio"]:checked + label:not(.css_attribute_color):not(.o_product_variant_img) {
+  border-color: #0071E3 !important; /* contour bleu */
+  /* box-shadow: 0 0 0 3px rgba(0, 113, 227, .25) !important; */
+}
+
+/* ================================
+   Not available color option
+   ================================ */
+label.css_attribute_color.css_not_available {
+  opacity: 1;
+}
+
+label.css_attribute_color.css_not_available:after {
+  content: "";
+  @include o-position-absolute(-2px, -2px, -2px, -2px);
+  /* border: 2px solid map-get($theme-colors, 'danger'); */
+  border-radius: 22%;
+  background: url("data:image/svg+xml;utf8,<svg viewBox='0 0 15 15' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M6.7929 7.49998L1.14645 1.85353L1.85356 1.14642L7.50001 6.79287L13.1465 1.14642L13.8536 1.85353L8.20711 7.49998L13.8536 13.1464L13.1465 13.8535L7.50001 8.20708L1.85356 13.8535L1.14645 13.1464L6.7929 7.49998Z' fill='%23dc3545'/></svg>")
+              center/100% no-repeat;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#wrapwrap .variant_attribute .o_variant_pills.btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 14px;min-height:40px;width:60%;
+  border:2px solid #86868B!important;border-radius:12px!important;
+  cursor:pointer;transition:border-color .2s,box-shadow .2s;
+  background:#fff!important;box-shadow:none!important;
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn:not(.active):hover{
+  border-color:#0071E3!important;
+  /* box-shadow:0 0 0 3px rgba(0,113,227,.15)!important; */
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn.active{
+  border-color:#0071E3!important;
+  /* box-shadow:0 0 0 3px rgba(0,113,227,.25)!important; */
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn{
+  font-size:13px;           /* adjust as you like */
+  color:#111 !important;      /* default text color */
+}
+
+/* active state text color */
+#wrapwrap .variant_attribute .o_variant_pills.btn.active{
+  color:#000 !important;
+}
+
+/* optional: badge/extra price text size + color */
+#wrapwrap .variant_attribute .o_variant_pills.btn .badge,
+#wrapwrap .variant_attribute .o_variant_pills.btn .sign_badge_price_extra{
+
+  color:#0071E3 !important;
+}
+
+/* section titles (HEADRAIL, COLOR, CONTROL TYPE) */
+#wrapwrap .variant_attribute .attribute_name{
+
+  color:#6e6e73;
+}
+
+
+
+/* ================================
+   Style for color attribute options
+   ================================ */
+/* Generic input fields */
+input,
+select,
+textarea
+{
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus (active) state */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border: 2px solid #0071E3 !important;   /* little stronger border */
+  outline: none;                          /* remove browser default outline */
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1); /* optional soft glow */
+  background: #f9f9f9;
+}
+
+.css_attribute_color,
+.css_attribute input[type="radio"] + label:not(.css_attribute_color):not(.o_product_variant_img) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px !important; /* reduce padding so image can breathe */
+  min-height: 42px;   min-width: 42px;
+  background-position: center;
+  border: 2px solid #86868B !important; /* gris plus fort */
+  border-radius: 12px !important;
+  cursor: pointer;
+  margin-right: 4px; /* Adjust as necessary for alignment */
+  transition: border-color .2s ease, box-shadow .2s ease;
+  /* ensure consistency with other options */
+}
+
+/* Hover state for color options */
+.css_attribute_color:hover,
+.css_attribute input[type="radio"] + label:hover:not(.css_attribute_color):not(.o_product_variant_img) {
+  border-color: #0071E3 !important; /* contour bleu au survol */
+  /* box-shadow: 0 0 0 3px rgba(0, 113, 227, .15) !important; */
+}
+
+/* Selected / active for color options */
+.css_attribute_color.active,
+.css_attribute input[type="radio"]:checked + label:not(.css_attribute_color):not(.o_product_variant_img) {
+  border-color: #0071E3 !important; /* contour bleu */
+  /* box-shadow: 0 0 0 3px rgba(0, 113, 227, .25) !important; */
+}
+
+/* ================================
+   Not available color option
+   ================================ */
+label.css_attribute_color.css_not_available {
+  opacity: 1;
+}
+
+label.css_attribute_color.css_not_available:after {
+  content: "";
+  @include o-position-absolute(-2px, -2px, -2px, -2px);
+  /* border: 2px solid map-get($theme-colors, 'danger'); */
+  border-radius: 22%;
+  background: url("data:image/svg+xml;utf8,<svg viewBox='0 0 15 15' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' clip-rule='evenodd' d='M6.7929 7.49998L1.14645 1.85353L1.85356 1.14642L7.50001 6.79287L13.1465 1.14642L13.8536 1.85353L8.20711 7.49998L13.8536 13.1464L13.1465 13.8535L7.50001 8.20708L1.85356 13.8535L1.14645 13.1464L6.7929 7.49998Z' fill='%23dc3545'/></svg>")
+              center/100% no-repeat;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#wrapwrap .variant_attribute .o_variant_pills.btn{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 14px;min-height:40px;width:60%;
+  border:2px solid #86868B!important;border-radius:12px!important;
+  cursor:pointer;transition:border-color .2s,box-shadow .2s;
+  background:#fff!important;box-shadow:none!important;
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn:not(.active):hover{
+  border-color:#0071E3!important;
+  /* box-shadow:0 0 0 3px rgba(0,113,227,.15)!important; */
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn.active{
+  border-color:#0071E3!important;
+  /* box-shadow:0 0 0 3px rgba(0,113,227,.25)!important; */
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn{
+  font-size:13px;           /* adjust as you like */
+  color:#111 !important;      /* default text color */
+}
+
+/* active state text color */
+#wrapwrap .variant_attribute .o_variant_pills.btn.active{
+  color:#000 !important;
+}
+
+/* optional: badge/extra price text size + color */
+#wrapwrap .variant_attribute .o_variant_pills.btn .badge,
+#wrapwrap .variant_attribute .o_variant_pills.btn .sign_badge_price_extra{
+
+  color:#0071E3 !important;
+}
+
+/* section titles (HEADRAIL, COLOR, CONTROL TYPE) */
+#wrapwrap .variant_attribute .attribute_name{
+
+  color:#6e6e73;
+}
+
+
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type .o_wsale_product_attribute {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 24px 30px !important; /* slightly reduced gap */
+  justify-items: center !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type .o_wsale_product_attribute .list-inline-item {
+  margin: 0 !important;
+  width: 50% !important;
+  display: block !important;
+}
+
+/* main box */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 80% !important;
+  aspect-ratio: 1 / 1 !important;
+  border: 2px solid #60a5fa !important;
+  border-radius: 12px !important;
+  padding: 28px !important; 
+  transition: border-color .25s ease, box-shadow .25s ease !important;
+  position: relative !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+/* image centered perfectly inside box */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color img {
+
+  width: 80% !important;
+  height: 80% !important;
+  flex: 1 1 auto !important;
+    object-fit: contain !important;
+  display: block !important;
+  margin: 20px 20px 14px 20px !important;
+  transform: scale(0.85) !important;     /* <— reduce overall visual size */
+  transform-origin: center !important;
+  transition: transform .25s ease !important;
+}
+
+/* title inside, centered under image */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color[title]::after {
+  content: attr(title);
+  position: static !important;
+  display: block !important;
+  font-size: 0.8rem !important;
+  line-height: 1.2 !important;
+  color: #000 !important;
+  text-align: center !important;
+  border: none !important;
+  margin-top: 3px !important;
+  padding: 0 !important;
+}
+
+/* hover + active state */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color:hover {
+  border-color: #3b82f6 !important;
+}
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color.active {
+  border-color: #1d4ed8 !important;
+}
+
+
+
+
+
+----------------
+
+
+/* Attributes new css code */
+
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type .o_wsale_product_attribute {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 24px 30px !important; /* slightly reduced gap */
+  justify-items: center !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type .o_wsale_product_attribute .list-inline-item {
+  margin: 0 !important;
+  width: 50% !important;
+  display: block !important;
+}
+
+/* main box */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 80% !important;
+  aspect-ratio: 1 / 1 !important;
+  border: 2px solid #60a5fa !important;
+  border-radius: 12px !important;
+  padding: 28px !important; 
+  transition: border-color .25s ease, box-shadow .25s ease !important;
+  position: relative !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+/* image centered perfectly inside box */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color img {
+
+  width: 80% !important;
+  height: 80% !important;
+  display: contain !important;
+  margin: 20px 20px 20px 20px !important;
+  padding: 20px 20px 20px 20px !important;
+}
+
+/* title inside, centered under image */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color {
+  overflow: visible !important; /* allow the title to show outside the box */
+}
+
+/* title displayed below the box */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color[title]::after {
+  content: attr(title);
+    display: contain !important;
+
+  position: absolute !important;
+  bottom: -24px !important;         /* distance below the box */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  font-size: 0.85rem !important;
+  line-height: 1.3 !important;
+  color: #000 !important;
+  text-align: center !important;
+  white-space: nowrap !important;   /* prevent wrapping */
+  pointer-events: none !important;  /* avoid interfering with clicks */
+}
+/* hover + active state */
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color:hover {
+  border-color: #3b82f6 !important;
+}
+#wrapwrap .js_add_cart_variants > li.variant_attribute:first-of-type label.css_attribute_color.active {
+  border-color: #1d4ed8 !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2) .o_wsale_product_attribute {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 28px !important;
+  flex-wrap: nowrap !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2) .o_wsale_product_attribute .list-inline-item {
+  width: auto !important;
+  margin: 0 !important;
+  display: inline-block !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2) label.css_attribute_color {
+  position: relative !important;
+  width: 68px !important;
+  height: 68px !important;
+  border-radius: 50% !important;
+  background-clip: content-box !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px !important;
+  border: 2px solid #000 !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2)
+label.css_attribute_color[style*="background"]::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 4px !important;
+  left: 4px !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  border-radius: 50% !important;
+  border: 2px solid #000 !important;
+  background: inherit !important;
+  z-index: 1 !important;
+}
+
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2)
+label.css_attribute_color:hover {
+  transform: scale(1.08) !important;
+  border-color: #1d4ed8 !important;
+}
+#wrapwrap .js_add_cart_variants > li.variant_attribute:nth-of-type(2)
+label.css_attribute_color.active {
+  border-color: #1d4ed8 !important;
+}
+
+/*   CONTROL TYPE (o_variant_pills) */
+
+#wrapwrap .variant_attribute:has(.o_variant_pills) .o_wsale_product_attribute .list-inline-item {
+  width: 100% !important;
+  display: block !important;
+  margin: 0 0 16px 0 !important;
+    text-align:left !important;
+}
+
+#wrapwrap .variant_attribute .o_variant_pills.btn {
+  display: flex !important;
+  align-items: left !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  width: 100% !important;
+  min-height: 64px !important;
+  padding: 18px 20px !important;
+  border: 2px solid #000 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  font-size: 14px !important;
+  color: #111 !important;
+  cursor: pointer !important;
+  transition: border-color .2s ease, box-shadow .2s ease !important;
+}
+
+#wrapwrap .variant_attribute .o_variant_pills.btn:not(.active):hover {
+  border-color: #1d4ed8 !important;
+}
+#wrapwrap .variant_attribute .o_variant_pills.btn.active {
+  border-color: #1d4ed8 !important;
+  color: #000 !important;
+}
+
+/* left text */
+#wrapwrap .variant_attribute .o_variant_pills.btn .o_variant_pills_input_value,
+#wrapwrap .variant_attribute .o_variant_pills.btn .radio_input_value {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  font-weight: 500 !important;
+
+}
+
+/* right gold addon text */
+#wrapwrap .variant_attribute .o_variant_pills.btn .lx-pill-addon {
+  margin-left: auto !important;
+  text-align: right !important;
+  float:right !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #b8860b !important;
+}
+
+.notificationmessage {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  cursor: help;
+  font-size: 15px;
+  font-weight: 400;
+  color: #b8860b; /* couleur du ? */
+    line-height: 1;            /* aligne parfaitement le ? avec le texte */
+
+}
+
+/* Texte du message (caché par défaut) */
+.notificationmessage::after {
+  content: attr(data-tooltip);
+  margin-left: 6px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #b8860b;
+    line-height: 1.1;          /* hauteur de ligne du message (Excel-like) */
+
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+/* Affichage uniquement au hover du ? */
+.notificationmessage:hover::after {
+  opacity: 1;
+}
+
+.lx-static-note {
+  margin: 16px 0 28px 0;        /* ✅ margin-bottom FIX */
+  padding: 14px 16px;
+  background: #f8fafc;         /* light modern grey */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;          /* modern rounded */
+  color: #111827;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Header */
+.lx-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.lx-info-icon {
+  font-size: 18px;
+}
+
+.lx-info-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+/* List */
+.lx-info-list {
+  margin: 0 0 10px 0;
+  padding-left: 18px;
+}
+
+.lx-info-list li {
+  margin: 4px 0;
+}
+
+/* Tip line */
+.lx-info-tip {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed #d1d5db;
+  font-size: 13px;
+  color: #374151;
+}
+
+/* =========================
+   INLINE ? (modern)
+   ========================= */
+
+.lx-cart-tipwrap{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Modern ? */
+.lx-cart-q{
+  font-size: 16px;        /* requested size */
+  font-weight: 400;      /* not bold */
+  color: #c89b2c;        /* elegant gold */
+  cursor: help;
+  line-height: 1;
+  margin-left: 3px;
+  opacity: 0.85;
+  transition: opacity .15s ease;
+}
+
+.lx-cart-tipwrap:hover .lx-cart-q{
+  opacity: 1;
+}
+
+/* =========================
+   MODERN TOOLTIP CARD (RIGHT)
+   ========================= */
+
+
+.lx-cart-tipwrap{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lx-cart-q{
+  font-size: 16px;
+  font-weight: 400;
+  color: #c89b2c;
+  cursor: help;
+  line-height: 1;
+  margin-left: 3px;
+  opacity: .85;
+}
+
+.lx-cart-tipwrap:hover .lx-cart-q{
+  opacity: 1;
+}
+
+/* =========================
+   MODERN TOOLTIP CARD
+   ========================= */
+
+.lx-cart-tipbox{
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 14px);
+  transform: translateY(-50%);
+
+  min-width: 560px;
+  max-width: 800px;
+
+  background: linear-gradient(180deg, #fffef9 0%, #f7f1dc 100%);
+  color: #1f2937;
+
+  border: 1px solid rgba(200,155,44,.35);
+  border-radius: 14px;
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.12),
+    0 2px 6px rgba(0,0,0,.06);
+
+  padding: 16px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+
+  opacity: 0;
+  visibility: hidden;
+  z-index: 9999;
+
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Arrow */
+.lx-cart-tipbox::before{
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+
+  width: 14px;
+  height: 14px;
+
+  background: #fffef9;
+  border-left: 1px solid rgba(200,155,44,.35);
+  border-bottom: 1px solid rgba(200,155,44,.35);
+}
+
+.lx-cart-tipwrap:hover .lx-cart-tipbox{
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =========================
+   CONTENT ICONS (MODERN)
+   ========================= */
+
+/* Bullet: soft dot (not checkmark) */
+.lx-cart-tipbox .lx-bullet{
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 10px;
+}
+
+.lx-cart-tipbox .lx-bullet::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  background: #6b7280;
+  border-radius: 50%;
+}
+
+/* Tip line: modern "i" info circle */
+.lx-cart-tipbox .lx-tipline{
+  position: relative;
+  margin-top: 12px;
+  padding-top: 12px;
+  padding-left: 26px;
+
+  border-top: 1px dashed rgba(200,155,44,.35);
+  color: #374151;
+}
+
+.lx-cart-tipbox .lx-tipline::before{
+  content: "i";
+  position: absolute;
+  left: 0;
+  top: 12px;
+
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: 600;
+  color: #1f2937;
+  background: rgba(200,155,44,.18);
+}
+
+/* allow overflow */
+#cart_products,
+.o_cart_product{
+  overflow: visible !important;
+}

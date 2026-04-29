@@ -1,0 +1,172 @@
+/* =============================================================
+   GALLERY — Filter dropdown UI + Inspiration grid cards
+   ============================================================= */
+
+/* ------------------------------------------------------------------
+   Gallery filter widget (lx-gallery-filter)
+------------------------------------------------------------------ */
+.lx-gallery-filter .lx-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.lx-gallery-filter .lx-filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  padding: 8px;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+
+.lx-gallery-filter .lx-filter-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+  border-color: rgba(47,124,185,.35);
+}
+
+.lx-gallery-filter .lx-filter-item.is-active {
+  border: 1px solid #2f7cb9;
+}
+
+.lx-gallery-filter .lx-filter-item img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.lx-gallery-filter .lx-filter-item span {
+  font-size: 12px;
+  color: #333;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------
+   Inspiration page — filter bar + gallery grid
+------------------------------------------------------------------ */
+.lx_insp_title {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.lx_insp_divider {
+  max-width: 520px;
+  margin: 18px auto 0;
+  opacity: .12;
+}
+
+.lx_insp_filters {
+  padding: 24px 0 10px;
+}
+
+.lx_filter_bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.lx_field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 220px;
+}
+
+.lx_label {
+  font-size: 12px;
+  font-weight: 700;
+  opacity: .65;
+}
+
+.lx_select {
+  width: 100%;
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  outline: none;
+}
+
+.lx_select:focus {
+  border-color: rgba(0,0,0,.24);
+}
+
+.lx_meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: .70;
+}
+
+.lx_insp_gallery {
+  padding: 18px 0 60px;
+}
+
+.lx_grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.lx_card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  transition: transform .12s ease;
+}
+.lx_card:hover { transform: translateY(-2px); }
+
+.lx_img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: rgba(0,0,0,.03);
+  overflow: hidden;
+}
+.lx_img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lx_name {
+  padding: 12px 12px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 991.98px) {
+  .lx_grid  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lx_meta  { margin-left: 0; }
+  .lx_field { min-width: 180px; }
+}
+
+@media (max-width: 575.98px) {
+  .lx_grid  { grid-template-columns: 1fr; }
+  .lx_field { min-width: 100%; }
+  .lx_meta  { width: 100%; padding: 8px 2px 0; height: auto; }
+}

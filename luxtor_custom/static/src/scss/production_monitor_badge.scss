@@ -1,0 +1,50 @@
+/* Pill look */
+.o_list_view .o_field_widget.o_field_selection_badge .o_selection_badge,
+.o_list_view .o_field_widget.o_field_selection_badge .badge {
+  border: 0 !important;
+  border-radius: 4px !important;
+  padding: 2px 10px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+}
+
+/* Exact colors */
+.o_list_view .lx_state_not_started {
+  background: #DC2626 !important;
+}
+.o_list_view .lx_state_in_works {
+  background: #F59E0B !important;
+}
+.o_list_view .lx_state_complete {
+  background: #16A34A !important;
+}
+
+@media (min-width: 992px) {
+  /* Target only the product configurator */
+  .o_sale_product_configurator_dialog {
+
+    /* The list that is currently "list-inline" */
+    ul.list-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 8px; /* spacing between options */
+      padding-left: 0;
+      margin-bottom: 0;
+    }
+
+    /* Each pill becomes full row */
+    li.o_sale_product_configurator_ptav_pills.list-inline-item {
+      display: block !important;
+      width: 100%;
+      margin: 0 !important;
+    }
+
+    /* Make the button/label take full width */
+    li.o_sale_product_configurator_ptav_pills label.btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      white-space: normal;
+    }
+  }
+}

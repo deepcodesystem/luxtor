@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="luxtor_custom.sale_product_dimensions"
+   t-inherit="sale.Product"
+   t-inherit-mode="extension">
+
+    <!--
+        XPATH 1 — Location / Width / Height
+        Inserted AFTER the product name div, BEFORE the PTAL attribute lines.
+        This is a static node confirmed from Odoo 19 source.
+        Guarded by isDimensionProduct.
+    -->
+    <xpath expr="//div[@name='o_sale_product_configurator_name']" position="after">
+
+        <div t-if="this.lxState.isDimensionProduct" class="lx_sale_dims_block mb-3 mt-2">
+
+            <!-- LOCATION -->
+            <div class="mb-2">
+                <label class="form-label fw-semibold text-capitalize mb-1"
+                       for="lx_cfg_location">Location</label>
+                <select
+                    id="lx_cfg_location"
+                    t-on-change="this.lxOnLocationChange"
+                    style="
+                        width: 100%;
+                        background: transparent;
+                        border: none;
+                        border-bottom: 1px solid var(--o-input-border-color, #ced4da);
+                        border-radius: 0;
+                        padding: 0.25rem 0;
+                        color: inherit;
+                        font-size: inherit;
+                        outline: none;
+                        cursor: pointer;
+                        appearance: auto;
+                    "
+                >
+                    <option value=""> </option>
+                    <t t-foreach="this.lxState.locationOptions or []"
+                       t-as="loc"
+                       t-key="loc.id">
+                        <option
+                            t-att-value="loc.id"
+                            t-att-selected="this.lxState.lx_location_id === loc.id"
+                        >
+                            <t t-esc="loc.name"/>
+                        </option>
+                    </t>
+                </select>
+            </div>
+
+            <!-- WIDTH -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-capitalize mb-1"
+                       for="lx_cfg_width">Width</label>
+                <input
+                    id="lx_cfg_width"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    autocomplete="off"
+                    name="lx_width_m"
+                    t-att-class="'form-control' + (this.lxState.widthError ? ' is-invalid' : '')"
+                    t-att-value="this.lxState.lx_width_m or ''"
+                    t-att-placeholder="this.lxState.widthPlaceholder or 'min: 0.60 m'"
+                    t-on-input="this.lxOnWidthInput"
+                />
+                <div t-if="this.lxState.widthError" class="invalid-feedback d-block">
+                    <t t-esc="this.lxState.widthError"/>
+                </div>
+            </div>
+
+            <!-- HEIGHT -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-capitalize mb-1"
+                       for="lx_cfg_height">Height</label>
+                <input
+                    id="lx_cfg_height"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    autocomplete="off"
+                    name="lx_height_m"
+                    t-att-class="'form-control' + (this.lxState.heightError ? ' is-invalid' : '')"
+                    t-att-value="this.lxState.lx_height_m or ''"
+                    t-att-placeholder="this.lxState.heightPlaceholder or 'min: 0.90 m'"
+                    t-on-input="this.lxOnHeightInput"
+                />
+                <div t-if="this.lxState.heightError" class="invalid-feedback d-block">
+                    <t t-esc="this.lxState.heightError"/>
+                </div>
+            </div>
+
+            <!-- Live price sync (hidden — drives dialog header price) -->
+            <div t-if="this.lxState.livePrice" class="mt-2 text-muted small" style="display:none">
+                Indicative unit price:
+                <strong class="text-body">
+                    <t t-esc="this.lxState.livePrice.toFixed(2)"/>
+                </strong>
+            </div>
+
+        </div>
+    </xpath>
+
+    <!--
+        XPATH 2 — Motor Variant pills
+        Inserted BEFORE the impossible_combination_alert div.
+        From Odoo 19 source (confirmed):
+            <div t-if="!this.env.isPossibleCombination(...)"
+                 class="alert alert-warning impossible_combination_alert mt-3">
+        This is a STATIC node in the template (it's a div with t-if, not t-foreach).
+        It always exists as a compiled node, just conditionally shown.
+        Placing our block before it puts it AFTER all PTAL attribute lines.
+
+        Uses exact same HTML structure as sale.uom_selector (also in product.xml):
+            d-flex gap-2 flex-column align-items-start justify-content-start mb-2 small
+            label.fw-bold.me-3
+            ul.list-inline.list-unstyled.flex-grow-1.mb-0
+    -->
+    <xpath expr="//div[hasclass('impossible_combination_alert')]" position="before">
+
+        <!--
+            Motor Control — vertical list, one option per line.
+            Shows mv.label (friendly name from lx_motor_label field on
+            product.attribute.value) falling back to mv.code if not set.
+            SOL display name is unchanged — only the dialog uses this label.
+        -->
+        <div t-if="this.lxState.isMotorOnly"
+             class="d-flex gap-2 flex-column align-items-start justify-content-start mb-2 small">
+
+            <label class="fw-bold me-3">Motor Control</label>
+
+            <ul class="list-unstyled d-flex flex-column gap-2 flex-grow-1 mb-0">
+                <t t-foreach="this.lxState.motorVariants or []"
+                   t-as="mv"
+                   t-key="mv.id">
+                    <li>
+                        <!--
+                            Bootstrap btn-check: the real <input> is hidden by CSS.
+                            t-on-click on the <label> is the most reliable way to
+                            capture the selection in OWL (change on hidden inputs
+                            may not propagate through OWL event delegation).
+                        -->
+                        <label
+                            t-att-class="'btn btn-outline-secondary' + (this.lxState.lx_motor_variant_id === mv.id ? ' active' : '')"
+                            t-att-for="'lx_motor_' + mv.id"
+                            t-on-click="() => this.lxSetMotorVariant(mv.id)"
+                        >
+                            <t t-esc="mv.label or mv.code or mv.name"/>
+                        </label>
+                        <input
+                            class="btn-check"
+                            type="radio"
+                            name="lx_motor_variant"
+                            t-att-id="'lx_motor_' + mv.id"
+                            t-att-value="mv.id"
+                            t-att-checked="this.lxState.lx_motor_variant_id === mv.id"
+                            t-on-change="this.lxOnMotorVariantChange"
+                        />
+                    </li>
+                </t>
+            </ul>
+        </div>
+
+    </xpath>
+
+</t>
+</templates>

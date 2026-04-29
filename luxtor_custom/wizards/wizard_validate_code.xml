@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_lx_validate_code_wizard" model="ir.ui.view">
+    <field name="name">lx.validate.code.wizard.form</field>
+    <field name="model">lx.validate.code.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Validate Verification Code">
+        <group>
+          <field name="code" placeholder="123456"/>
+        </group>
+        <footer>
+          <button string="Validate" type="object" name="action_confirm" class="btn-primary"/>
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="lx_wizard_validate_code_action" model="ir.actions.act_window">
+    <field name="name">Validate Code</field>
+    <field name="res_model">lx.validate.code.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+</odoo>

@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="service_select" name="Services">
+     <t t-call="website_sale.checkout_layout">
+
+        <t t-set="additional_title">Services</t>
+        <!-- V19: show cart summary sidebar and navigation buttons -->
+        <t t-set="show_shorter_cart_summary" t-value="False"/>
+        <t t-set="show_navigation_button" t-value="True"/>
+        <t t-set="show_mobile_cart_summary" t-value="True"/>
+
+        <t t-set="oe_structure">
+            <div class="oe_structure" id="oe_structure_lx_service_top"/>
+        </t>
+
+        <t t-set="free_threshold" t-value="float(request.env['ir.config_parameter'].sudo().get_param('luxtor.lx_free_amount_order') or 0.0)"/>
+
+        <div class="col">
+            <div id="lx_express_block" class="lx-express-wrap" aria-labelledby="lx_express_label">
+                <div class="lx-express-head" id="lx_express_label">Choose a Priority service</div>
+
+                <form action="/shop/service/submit" method="post" class="o_website_sale mb-4">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <!-- Priority options (stacked) -->
+                    <div class="lx-express-group" role="radiogroup" aria-labelledby="lx_express_label">
+                        <input type="radio" id="lx_express_no" name="priority" value="standard" class="lx-express-radio js-lx-express" t-att-checked="'checked' if not priority_selected else None"/>
+                        <label class="lx-express-opt" for="lx_express_no">
+                            <span class="lx-express-title">Standard</span>
+                            <span class="lx-express-sub"/>
+                        </label>
+
+                        <input type="radio" id="lx_express_yes" name="priority" value="express" class="lx-express-radio js-lx-express" t-att-checked="'checked' if priority_selected else None"/>
+                        <label class="lx-express-opt" for="lx_express_yes">
+                            <span class="lx-express-title">Express</span>
+                            <span class="lx-express-sub">
+                                <span id="lx_express_price" t-att-data-unit="priority_unit" t-att-data-qty="qty_mrp" t-att-data-free="1 if priority_is_free else 0">
+                                    <t t-if="priority_is_free">Free</t>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div id="lx_express_reward_msg" class="lx-reward-msg d-none" role="status"/>
+
+                    <!-- Separator before offer -->
+                    <div class="lx-sep" role="presentation"/>
+
+                    <div class="lx-offer-wrap mt-3 mb-4">
+                        <h4 class="lx-offer-title">Offer</h4>
+
+                        <div class="lx-offer-box">
+                            <div class="lx-offer-line">
+                                <!-- CHANGED: icon in grey circle (no emoji color issues) -->
+                                <div class="lx-offer-icon" aria-hidden="true">
+                                    <span class="lx-offer-dot" aria-hidden="true"/>
+                                </div>
+                                <div class="lx-offer-text">
+                                    <div class="lx-offer-main">
+                                        <t t-if="priority_is_free">Express Delivery is currently Free.</t>
+                                        <t t-else="">
+                                            Next-Day Delivery for only
+                                            <t t-esc="('%0.2f' % (priority_unit or 0.0))"/> DH!
+                                        </t>
+                                    </div>
+                                    <div class="lx-offer-sub">Order before 12 PM and receive it the very next day.</div>
+                                </div>
+                            </div>
+
+                            <div class="lx-offer-learn mt-2">
+                                <a href="#" class="lx-offer-link">Learn more</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lx-express-head">Add Installation service</div>
+
+                    <!-- Install options (stacked) -->
+                    <div class="lx-express-group" role="radiogroup" aria-label="Installation service">
+                        <input type="radio" id="lx_install_yes" name="install" value="yes" class="lx-express-radio js-lx-install" t-att-checked="'checked' if install_selected else None"/>
+                        <label class="lx-express-opt" for="lx_install_yes">
+                            <span class="lx-express-title">Yes</span>
+                            <span class="lx-express-sub">
+                                <span id="lx_install_price" t-att-data-unit="install_unit" t-att-data-qty="qty_mrp" t-att-data-free="1 if install_is_free else 0">
+                                    <t t-if="install_is_free">Free</t>
+                                </span>
+                            </span>
+                        </label>
+
+                        <input type="radio" id="lx_install_no" name="install" value="no" class="lx-express-radio js-lx-install" t-att-checked="'checked' if not install_selected else None"/>
+                        <label class="lx-express-opt" for="lx_install_no">
+                            <span class="lx-express-title">No, thanks</span>
+                            <span class="lx-express-sub"/>
+                        </label>
+                    </div>
+
+                    <t t-set="install_code" t-value="'INSTALL_SERVICE'"/>
+                    <t t-set="install_line" t-value="website_sale_order and website_sale_order.order_line.filtered(lambda l: (not l.display_type) and l.product_id and ((l.product_id.default_code or '').strip().upper() == install_code))[:1]"/>
+                    <t t-set="install_is_free" t-value="bool(install_line) and ((install_line.discount or 0.0) &gt;= 100.0)"/>
+
+                    <div id="lx_install_reward_msg" t-attf-class="lx-reward-msg #{'' if install_is_free and install_selected else 'd-none'}" role="status">
+                        Congratulations! Free Installation has been successfully applied to your order.
+                    </div>
+
+                    <!-- Separator before offer -->
+                    <div class="lx-sep" role="presentation"/>
+
+                    <div class="lx-offer-wrap mt-3 mb-4">
+                        <h4 class="lx-offer-title">Offer</h4>
+
+                        <div class="lx-offer-box">
+                            <div class="lx-offer-line">
+                                <div class="lx-offer-icon" aria-hidden="true">
+                                    <span class="lx-offer-dot" aria-hidden="true"/>
+                                </div>
+                                <div class="lx-offer-text">
+                                    <div class="lx-offer-main">
+                                        Free Installation on orders above
+                                        <span t-out="free_threshold" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>.
+                                    </div>
+                                    <div class="lx-offer-sub">
+                                        The Standard installation fee is
+                                        <t t-esc="('%0.2f' % (install_unit or 0.0))"/> DH per Roller Blind for locations within Casablanca.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="lx-offer-learn mt-2">
+                                <a href="#" class="lx-offer-link">Learn more</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="oe_structure" id="oe_structure_lx_service_bottom"/>
+        </div>
+
+        <style>
+            /* Reward message */
+            #wrapwrap .lx-reward-msg{
+                display:block;
+                padding:14px 16px;
+                margin-top:12px;
+                border:1px solid rgba(17, 24, 39, .14);
+                border-radius:8px;
+                background: rgba(59, 130, 246, .08);
+                color:#111829;
+                font-size:16px;
+                line-height:1.35;
+            }
+            #wrapwrap .lx-reward-msg.d-none{ display:none !important; }
+
+            /* Layout */
+            #wrapwrap{ --lx-maxw:680px; --lx-offset:80px; --lx-h:56px; }
+            #wrapwrap .lx-express-wrap{
+                max-width:var(--lx-maxw);
+                margin:16px auto 22px var(--lx-offset)!important;
+                box-sizing:border-box;
+            }
+            @media (max-width:576px){
+                #wrapwrap .lx-express-wrap{ margin-left:0!important; margin-right:0!important; }
+            }
+
+            /* Headings */
+            #wrapwrap .lx-express-head{ font-weight:600; margin:22px 0 10px; }
+
+            /* Radio group: stacked */
+            #wrapwrap .lx-express-group{
+                display:flex;
+                flex-direction:column;
+                gap:12px;
+            }
+            #wrapwrap .lx-express-radio{
+                position:absolute;
+                opacity:0;
+                pointer-events:none;
+            }
+            #wrapwrap .lx-express-opt{
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                min-height:56px;
+                padding:14px 16px;
+                font-weight:600;
+                background:#fff;
+                border:2px solid #d1d5db;
+                border-radius:10px;
+                cursor:pointer;
+                user-select:none;
+                transition:border-color .15s, box-shadow .15s;
+            }
+            #wrapwrap .lx-express-radio:checked + .lx-express-opt{
+                border-color:#0071E3;
+                box-shadow: inset 0 0 0 1px #0071E3;
+            }
+
+            /* Price style */
+            #lx_install_price,
+            #lx_express_price{
+                display:inline-block !important;
+                text-align:right !important;
+                direction:ltr !important;
+                font-weight:500 !important;
+                font-size:0.94rem !important;
+                font-family:"Inter","Roboto","Helvetica Neue",Arial,sans-serif !important;
+                color:#6c757d !important;
+                letter-spacing:0.2px !important;
+                margin-left:6px !important;
+                padding:0 !important;
+                border:none !important;
+                background:none !important;
+                user-select:none !important;
+                opacity:0.92 !important;
+            }
+
+            /* Separator line before Offer */
+            #wrapwrap .lx-sep{
+                height:1px;
+                background:rgba(17, 24, 39, .12);
+                margin:18px 0 8px;
+                border-radius:1px;
+            }
+
+            /* Offer title: force Capitalize + bold like screenshot */
+            .lx-offer-title{
+                font-weight:700;
+                font-size:0.92rem;
+                text-transform:Capitalize;
+                color:#111827;
+                margin-bottom:.5rem;
+                letter-spacing:.6px;
+            }
+
+            /* Offer box: FORCE grey (your screenshot) */
+            .lx-offer-box{
+                background:#f3f4f6 !important;
+                border:1px solid #d1d5db !important;
+                border-radius:10px;
+                padding:12px 14px;
+            }
+            .lx-offer-line{
+                display:flex;
+                align-items:flex-start;
+                gap:10px;
+                color:#374151;
+            }
+
+            /* Icon: GREY radio-style circle (no emoji) */
+            .lx-offer-icon{
+                width:24px;
+                height:24px;
+                border-radius:999px;
+                background:#e5e7eb;
+                border:1px solid rgba(17, 24, 39, .12);
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                flex-shrink:0;
+                margin-top:2px;
+            }
+            .lx-offer-dot{
+                width:8px;
+                height:8px;
+                border-radius:999px;
+                background:#9ca3af;
+                display:block;
+            }
+
+            .lx-offer-text{ display:flex; flex-direction:column; gap:3px; }
+            .lx-offer-main{
+                font-size:15px;
+                font-weight:600;
+                color:#111827;
+                line-height:1.4;
+            }
+            .lx-offer-sub{
+                font-size:14px;
+                color:#6b7280;
+                line-height:1.4;
+            }
+            .lx-offer-link{
+                font-weight:600;
+                font-size:14px;
+                text-decoration:underline;
+                color:#2563eb;
+            }
+        </style>
+
+    </t>
+  </template>
+
+
+  <!-- Read-only summary block on /shop/checkout (between address and delivery) 
+  <template id="checkout_services_summary" inherit_id="website_sale.checkout">
+    <xpath expr="//div[@id='shop_checkout']" position="after">
+      <t t-if="order">
+        <div class="lx-express-wrap mt-2 mb-3">
+          <div class="lx-express-head">Services</div>
+          <div class="lx-express-group">
+            <div class="lx-express-opt" role="status">
+              <t t-set="lp" t-value="order.order_line.filtered(lambda l: l.product_id and l.product_id.default_code == 'PRIORITY_SERVICE')"/>
+              <span class="lx-express-title" t-out="(lp and lp.product_uom_qty) and 'Express' or 'Standard'"/>
+              <span class="lx-express-sub">
+                <t t-if="lp">
+                  <t t-esc="('%0.2f DH' % sum(l.price_total for l in lp))"/>
+                </t>
+                <t t-else="">Free</t>
+              </span>
+              <a href="/shop/service" class="btn btn-sm btn-outline-secondary ms-auto">Edit</a>
+            </div>
+          </div>
+
+          <div class="lx-express-group mt-2">
+            <div class="lx-express-opt" role="status">
+              <t t-set="li" t-value="order.order_line.filtered(lambda l: l.product_id and l.product_id.default_code == 'INSTALL_SERVICE')"/>
+              <span class="lx-express-title">Installation</span>
+              <span class="lx-express-sub">
+                <t t-if="li"><t t-esc="('%0.2f DH' % sum(l.price_total for l in li))"/></t>
+                <t t-else="">Free</t>
+              </span>
+              <a href="/shop/service" class="btn btn-sm btn-outline-secondary ms-auto">Edit</a>
+            </div>
+          </div>
+        </div>
+      </t>
+    </xpath>
+  </template>--> 
+
+  <!-- <template id="navigation_buttons_no_back" inherit_id="website_sale.navigation_buttons">
+    <xpath expr="//a[@t-att-href=&quot;step_specific_values['back_button_href']&quot;]" position="replace">
+      <a href="/shop/cart" class="btn btn-outline-secondary w-100 w-lg-auto order-lg-1">
+      ← Back to Order Overview
+    </a>
+    </xpath>
+  </template> -->
+
+</odoo>

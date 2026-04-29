@@ -1,0 +1,93 @@
+/* =============================================================
+   DEBUG PANEL — Fixed dark floating panel (#lx_dbg_panel)
+   ============================================================= */
+
+#lx_dbg_panel {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  width: 420px;
+  max-width: calc(100vw - 28px);
+  max-height: calc(100vh - 24px);
+  background: #111;
+  color: #eee;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+  z-index: 999999;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+#lx_dbg_panel .lx_dbg_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #0b0b0b;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+#lx_dbg_panel .lx_dbg_title {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .02em;
+}
+
+#lx_dbg_panel .lx_dbg_actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  flex-wrap: wrap;
+}
+
+#lx_dbg_panel .lx_dbg_btn,
+#lx_dbg_panel .lx_dbg_tab {
+  appearance: none;
+  background: rgba(255,255,255,.08);
+  color: #eee;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+#lx_dbg_panel .lx_dbg_btn:hover,
+#lx_dbg_panel .lx_dbg_tab:hover { background: rgba(255,255,255,.12); }
+
+#lx_dbg_panel .lx_dbg_tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px 0 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+
+#lx_dbg_panel .lx_dbg_tab {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 6px 0;
+  background: transparent;
+  color: #bbb;
+}
+#lx_dbg_panel .lx_dbg_tab.is-active {
+  color: #fff;
+  background: rgba(255,255,255,.16);
+  border-bottom-color: rgba(255,255,255,.55);
+}
+
+#lx_dbg_panel .lx_dbg_body {
+  margin: 0;
+  padding: 10px 12px 12px 12px;
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#lx_dbg_panel.is-collapsed .lx_dbg_actions,
+#lx_dbg_panel.is-collapsed .lx_dbg_tabs,
+#lx_dbg_panel.is-collapsed .lx_dbg_body { display: none; }

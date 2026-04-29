@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="luxtor_cart_order_limit" inherit_id="website_sale.cart" name="Cart Order Limit Verification">
+        <xpath expr="//div[@id='shop_cart']/div[@class='clearfix']" position="before">
+            <t t-set="lx_order_id" t-value="int(request.session.get('sale_order_id') or 0)"/>
+            <t t-set="lx_session_order" t-value="request.env['sale.order'].sudo().browse(lx_order_id).exists()"/>
+            <t t-set="lx_order" t-value="website_sale_order or lx_session_order"/>
+            <t t-set="lx_website_order_id" t-value="website_sale_order and website_sale_order.id or 0"/>
+            <t t-set="lx_session_order_id_real" t-value="lx_session_order and lx_session_order.id or 0"/>
+            <t t-set="lx_resolved_order_id" t-value="lx_order and lx_order.id or 0"/>
+            <t t-set="lx_limit" t-value="float(request.env['ir.config_parameter'].sudo().get_param('luxtor.lx_order_limit_amount', '0') or 0.0)"/>
+            <t t-set="lx_total" t-value="lx_order and lx_order.amount_total or 0.0"/>
+            <t t-set="lx_required" t-value="bool(lx_order) and bool(lx_limit) and (lx_total &gt;= lx_limit)"/>
+            <t t-set="lx_ok" t-value="bool(lx_order and lx_order._fields.get('lx_verification_ok') and lx_order.lx_verification_ok)"/>
+            <t t-set="lx_token" t-value="lx_order and (lx_order.lx_verif_token or lx_order.sudo().lx_ensure_verification_token()) or ''"/>
+            <t t-set="lx_last_code" t-value="request.session.get('lx_last_code_value') or ''"/>
+            <t t-set="lx_should_show_block" t-value="bool(lx_required and not lx_ok)"/>
+
+            <t t-if="lx_order and lx_limit">
+                <t t-if="request.session.get('lx_msg_ok')">
+                    <div id="lx-verif-success-server" class="alert alert-success mb-3" role="alert" t-out="request.session.pop('lx_msg_ok')"/>
+                </t>
+
+                <div
+                    id="lx-verif-success"
+                    class="alert alert-success mb-3 d-none"
+                    role="alert"
+                >
+                    Authorization successful. You can proceed to checkout.
+                </div>
+
+                <div
+                    id="lx-limit-root"
+                    t-attf-class="lx-verif-wrap#{' d-none' if (not lx_required or lx_ok) else ''}"
+                    t-att-data-lx-limit="lx_limit"
+                    t-att-data-lx-total="lx_total"
+                    t-att-data-lx-ok="1 if lx_ok else 0"
+                    t-att-data-lx-should-show="1 if lx_should_show_block else 0"
+                    t-att-data-lx-token="lx_token"
+                    data-helpdesk-url="/helpdesk/customer-care-1"
+                >
+                    <div id="lx-limit-msg" class="mb-3 text-start">
+                        Your order exceeds the allowed limit. To continue, please request an authorization code to complete your purchase.
+                    </div>
+
+                    <t t-if="request.session.get('lx_msg_err')">
+                        <div id="lx-limit-server-error" class="alert alert-danger mb-3" role="alert" t-out="request.session.pop('lx_msg_err')"/>
+                    </t>
+
+                    <div class="d-grid mb-3">
+                        <button id="lx-helpdesk-btn" type="button" class="btn btn-secondary o_wsale_btn_checkout w-100">
+                            Click to Continue
+                        </button>
+                    </div>
+
+                    <form id="lx-validate-form" class="d-none" action="/shop/order/validate_code" method="post" novalidate="novalidate" aria-hidden="true">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="lx_token" t-att-value="lx_token"/>
+                        <div class="lx-limit-form-row">
+                            <input
+                                id="lx-code-input"
+                                class="form-control lx-limit-code-input"
+                                type="text"
+                                name="lx_code"
+                                t-att-value="lx_last_code"
+                                placeholder="Enter your code"
+                                aria-label="Authorization code"
+                                required="required"
+                            />
+                            <button id="lx-validate-btn" type="submit" class="btn btn-secondary lx-limit-validate-btn">
+                                Validate
+                            </button>
+                        </div>
+                        <div id="lx-feedback" class="mt-2 small text-danger d-none"/>
+                    </form>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

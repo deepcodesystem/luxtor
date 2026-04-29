@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- QUOTATION: Q/00001 -->
+    <record id="seq_sale_quotation_custom" model="ir.sequence">
+        <field name="name">Sales Quotation (Custom)</field>
+        <field name="code">custom.seq.sale.quotation</field>
+        <field name="prefix">Q/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="implementation">standard</field>
+    </record>
+
+    <!-- SALES ORDER: SO/00001 -->
+    <record id="seq_sale_order_custom" model="ir.sequence">
+        <field name="name">Sales Order (Custom)</field>
+        <field name="code">custom.seq.sale.order</field>
+        <field name="prefix">SO/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="implementation">standard</field>
+    </record>
+
+    <!-- INVOICE: INV/00001 (utilisé si activé sur le journal) -->
+    <record id="seq_account_invoice_custom" model="ir.sequence">
+        <field name="name">Customer Invoice (Custom)</field>
+        <field name="code">custom.seq.account.customer.invoice</field>
+        <field name="prefix">INV/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+        <field name="implementation">standard</field>
+    </record>
+    <record id="seq_lx_mrp_lot" model="ir.sequence">
+      <field name="name">Luxtor MO Lot Suffix</field>
+      <field name="code">lx.mrp.lot</field>
+      <field name="prefix"></field>
+      <field name="padding">3</field>
+      <field name="company_id" eval="False"/>
+      <field name="number_next">1</field>
+    </record>
+    <record id="seq_purchase_lot_number" model="ir.sequence">
+      <field name="name">Purchase LoT Number</field>
+      <field name="code">purchase.lot.number</field>
+      <field name="prefix">LoT-</field>
+      <field name="padding">3</field>
+      <field name="number_next">1</field>
+      <field name="number_increment">1</field>
+    </record>
+</odoo>

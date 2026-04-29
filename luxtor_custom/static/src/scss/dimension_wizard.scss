@@ -1,0 +1,85 @@
+/* CREATE/UPDATE: luxtor_custom/static/src/scss/dimension_wizard.scss */
+/* Subtle “PC dialog” feel: bigger text, proper gaps, muted hints, squared image */
+
+.lx-dim-wizard .o_form_sheet {
+  font-size: 15px;
+}
+
+.lx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 4px 0 10px;
+}
+
+.lx-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.lx-product-image .o_image,
+.lx-product-image img {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  background: #f3f4f6;
+}
+
+.lx-variant {
+  font-weight: 600;
+  font-size: 16px;
+  max-width: 620px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lx-meta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lx-meta-item .o_form_label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.lx-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 6px 0 10px;
+}
+
+.lx-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0;
+}
+
+.lx-line .o_form_label {
+  min-width: 90px;     /* space between label and field */
+  font-weight: 600;
+}
+
+.lx-line .o_field_widget {
+  min-width: 140px;    /* keeps inputs from collapsing */
+}
+
+.lx-hint {
+  color: #6b7280;      /* muted */
+  font-size: 13px;
+}
+
+.lx-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

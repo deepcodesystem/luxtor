@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- ═══════════════════════════════════════════════════════════
+             SALE ORDER FORM — main customisations
+             ═══════════════════════════════════════════════════════════ -->
+        <record id="view_sale_order_form_luxtor_custom" model="ir.ui.view">
+            <field name="name">sale.order.form.luxtor.custom</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="lx_payment_terms"/>
+                    <field name="lx_artisan_id" invisible="1"/>
+                    <field name="lx_artisan_commission_pct" readonly="1" invisible="1"/>
+                    <field name="lx_artisan_commission_amount" readonly="1" invisible="1"/>
+                    <field name="priority"/>
+                    <field name="lx_salesperson_id" widget="selection"/>
+                </xpath>
+
+                <xpath expr="//sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list[1]/field[@name='product_uom_qty']"
+                       position="attributes">
+                    <attribute name="options">{"human_readable":true}</attribute>
+                </xpath>
+
+                <xpath expr="//sheet/notebook/page[@name='order_lines']/div[@name='so_button_below_order_lines']/button[@name='action_open_delivery_wizard']"
+                       position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="Instructions">
+                        <group>
+                            <group>
+                                <field name="check_measure"  widget="radio" options="{'horizontal': true}"/>
+                                <field name="remove_product" widget="radio" options="{'horizontal': true}"/>
+                                <field name="split_shipping" widget="radio" options="{'horizontal': true}"/>
+                                <field name="preferences"    class="bordered-text"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+
+                <!-- Line No. column before product -->
+                <xpath expr="//field[@name='order_line']//field[@name='product_template_id']"
+                       position="before">
+                    <field name="sequence_number" string="Line No." readonly="1"/>
+                </xpath>
+
+                <!-- Location + dimensions after product.
+                     lx_location_id is visible here so the salesperson
+                     can set it. Make it column_invisible="1" if you want
+                     it hidden and set only via the product configurator. -->
+                <xpath expr="//field[@name='order_line']//field[@name='product_template_id']"
+                       position="after">
+                    <field name="lx_location_id"
+                           string="Location"
+                           optional="show"
+                           options="{'no_create': false}"
+                           placeholder="Select room…"/>
+                    <field name="lx_width_m"/>
+                    <field name="lx_height_m"/>
+                    <field name="size" readonly="1"/>
+                    <field name="lx_motor_only_variant_id" string="Motor"/>
+                </xpath>
+
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="delivery_date" readonly="0"/>
+                </xpath>
+
+                <xpath expr="//div[@name='so_button_below_order_lines']" position="inside">
+                    <button name="action_lx_apply_pending_configurator_payloads"
+                            string="Apply Config Payload"
+                            type="object"
+                            class="btn btn-secondary"/>
+                    <button name="action_open_shipping_wizard"
+                            string="Add Shipping"
+                            type="object"
+                            class="btn btn-primary"/>
+                </xpath>
+
+                <xpath expr="//page[@name='order_lines']/field[@name='order_line']//list//field[@name='product_uom_id']"
+                       position="attributes">
+                    <attribute name="domain">[('name','in',('m²','m','Unit','Set','Pair'))]</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+
+        <record id="view_order_form_lx_electric_sections" model="ir.ui.view">
+            <field name="name">sale.order.form.lx.electric.sections</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Hidden technical columns — must be declared so decoration
+                     expressions can reference these fields -->
+                <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']"
+                       position="after">
+                    <field name="lx_is_electric_subtotal"     column_invisible="1"/>
+                    <field name="lx_section_control_type"     column_invisible="1"/>
+                    <field name="lx_electric_subtotal_amount" column_invisible="1"/>
+                    <field name="lx_parent_line_id"           column_invisible="1"/>
+                </xpath>
+
+                <!--
+                  Row decorations applied to the <list> widget.
+                  Odoo converts "decoration-lx_section" to CSS class "o_decoration_lx_section".
+
+                  lx_section   → location section header  tr.o_is_line_section
+                  lx_subtotal  → electric subtotal note   tr.o_is_line_subsection
+                  lx_child     → accessory child line     tr.o_data_row
+                -->
+                <xpath expr="//field[@name='order_line']//list"
+                       position="attributes">
+                    <attribute name="decoration-lx_section">
+                        display_type == 'line_section' and lx_section_control_type == '__location__'
+                    </attribute>
+                    <attribute name="decoration-lx_subtotal">
+                        lx_is_electric_subtotal == True
+                    </attribute>
+                    <attribute name="decoration-lx_child">
+                        not display_type and lx_parent_line_id != False
+                    </attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- ═══════════════════════════════════════════════════════════
+             SALE ORDER FORM — partner phone
+             ═══════════════════════════════════════════════════════════ -->
+        <record id="view_order_form_inherit_phone" model="ir.ui.view">
+            <field name="name">sale.order.form.phone.mobile</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="partner_phone" widget="phone" string="Phone"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

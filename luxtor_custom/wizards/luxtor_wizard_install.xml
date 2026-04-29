@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_sale_order_installation_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.installation.wizard.form</field>
+            <field name="model">sale.order.installation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Add an Install Method" create="false" edit="false">
+                    <sheet>
+                        <div class="o_row o_form_header"
+                             style="padding:15px; border-radius:6px; margin-bottom:15px;">
+                            <group>
+                                <field name="installation" string="Install Method"/>
+                                
+                                <div class="o_row" style="align-items: center;">
+                                    <label for="quantity" string="Quantity"
+                                           style="margin-right:20px;"/> 
+                                    <field name="quantity"/>
+                                    <span style="margin-left:8px; color:#6b7280;">Unit(s)</span>
+                                </div>
+                                
+                                <field name="price" string="Unit Price"/>
+                            </group>
+                        </div>
+                        <footer>
+                            <button string="Add" type="object" name="action_confirm"
+                                    class="btn btn-primary"/>
+                            <button string="Discard" class="btn btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_sale_order_installation_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.installation.wizard.form</field>
+            <field name="model">sale.order.installation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Add an Install Method" create="false" edit="false">
+                    <sheet>
+                        <div class="o_row o_form_header"
+                             style="padding:15px; border-radius:6px; margin-bottom:15px;">
+                             <group>
+                                <field name="installation" 
+                                       string="Install Method"/>
+                               
+                                <div class="o_row">
+                                    <label for="quantity" string="Quantity"/>
+                                    <field name="quantity"/>
+                                    <span style="margin-left:8px; color:#6b7280;">Unit(s)</span>
+                                </div>
+                               
+                                <field name="price" string="Unit Price"/>
+                            </group>
+                        </div>
+                       <footer>
+                            <button string="Add" type="object" name="action_confirm"
+                                    class="btn btn-primary"/>
+                            <button string="Discard" class="btn btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+ -->

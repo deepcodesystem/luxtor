@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+      <record id="view_partner_form_inherit_sales_misc" model="ir.ui.view">
+            <field name="name">res.partner.form.sales.misc.custom</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//page[@name='sales_purchases']//group[@name='sale']" position="inside">
+
+                    <field name="lx_account_type_id" options="{'no_create_edit': False}"/>
+
+                    <div class="o_row">
+                        <label for="lx_account_rank" style="margin-right:10px;"/>
+                        <field name="lx_account_rank" class="oe_inline"/>
+                        <span style="margin-left:2px;">%</span>
+                    </div>
+
+                    <div class="o_row">
+                        <label for="lx_vendor_markdown" style="margin-right:10px;"/>
+                        <field name="lx_vendor_markdown" class="oe_inline"/>
+                        <span style="margin-left:2px;">%</span>
+                    </div>
+
+                </xpath>
+
+            </field>
+        </record>
+
+    <record id="view_partner_form_luxtor_artisan" model="ir.ui.view">
+        <field name="name">res.partner.form.luxtor.artisan</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//sheet/notebook" position="before">
+                <group string="Affiliation artisan" col="4">
+                    <field name="lx_company_currency_id" invisible="1"/>
+
+                    <field name="lx_is_artisan" colspan="4"/>
+
+                    <group colspan="2"
+                           invisible="not lx_is_artisan">
+                        <label for="lx_artisan_commission_pct"/>
+                        <div class="o_row">
+                            <field name="lx_artisan_commission_pct" class="oe_inline"/>
+                            <span style="margin-left:4px;">%</span>
+                        </div>
+                        <field name="lx_affiliate_code" readonly="1"/>
+                        <field name="lx_affiliate_url" widget="url" readonly="1"/>
+                    </group>
+
+                    <group colspan="2"
+                           invisible="not lx_is_artisan">
+                        <field name="lx_artisan_order_count" readonly="1"/>
+                        <field name="lx_artisan_order_total"
+                               widget="monetary"
+                               options="{'currency_field': 'lx_company_currency_id'}"
+                               readonly="1"/>
+                        <field name="lx_artisan_commission_total"
+                               widget="monetary"
+                               options="{'currency_field': 'lx_company_currency_id'}"
+                               readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Commandes"
+                      invisible="not lx_is_artisan">
+                    <field name="lx_artisan_order_ids"
+                           nolabel="1"
+                           readonly="1">
+                        <list>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="name" string="Order Reference"/>
+                            <field name="date_order" string="Order Date"/>
+                            <field name="partner_id" string="Customer"/>
+                            <field name="state" string="Status"/>
+                            <field name="amount_total" string="Total"/>
+                            <field name="lx_artisan_commission_amount" string="Commission"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    </data>
+</odoo>

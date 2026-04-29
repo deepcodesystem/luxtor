@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_delivery_carrier_form_lx" model="ir.ui.view">
+    <field name="name">delivery.carrier.form.lx.brackets</field>
+    <field name="model">delivery.carrier</field>
+    <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//sheet/div[@name='button_box']" position="inside">
+        <button name="action_generate_intra_rules"
+                type="object"
+                class="oe_stat_button"
+                >
+          <div class="o_stat_info o_field_widget">
+            <span class="o_stat_text">Generate Intracity Rules</span>
+          </div>
+        </button>
+        <button name="action_generate_inter_rules"
+                type="object"
+                class="oe_stat_button"
+                >
+          <div class="o_stat_info o_field_widget">
+            <span class="o_stat_text">Generate Intercity Rules</span>
+          </div>
+        </button>
+      </xpath>
+
+      <xpath expr="//field[@name='tracking_url']" position="after">
+        <field name="lx_carrier"/>
+      </xpath>
+
+      <xpath expr="//notebook" position="inside">
+        <page string="Weight Brackets">
+          <group>
+            <group>
+              <field name="intra_bracket_ids" colspan="2" context="{'default_kind': 'intra'}" />
+            </group>
+            <group>
+              <field name="inter_bracket_ids" colspan="2" context="{'default_kind': 'inter'}" />
+            </group>
+          </group>
+        </page>
+      </xpath>
+
+        <xpath expr="//field[@name='intra_bracket_ids']" position="inside">
+            <list string="Weight pricing bracket (intracity)">
+            <field name="min_kg" optional="show"/>
+            <field name="max_kg" optional="show"/>
+            <field name="unit_price" optional="show"/>
+            </list>
+        </xpath>
+
+        <xpath expr="//field[@name='inter_bracket_ids']" position="inside">
+            <list string="Weight pricing bracket (intercity)">
+            <field name="min_kg" optional="show"/>
+            <field name="max_kg" optional="show"/>
+            <field name="unit_price" optional="show"/>
+            </list>
+        </xpath>
+
+    </field>
+  </record>
+</odoo>

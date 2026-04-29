@@ -1,0 +1,17 @@
+<odoo>
+    <data noupdate="1">
+        <record id="website_menu_inspiration" model="website.menu">
+            <field name="name">Inspiration</field>
+            <field name="url">/inspiration</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" eval="25"/>
+        </record>
+
+        <record id="website_menu_order_tracking" model="website.menu">
+            <field name="name">Suivi de commande</field>
+            <field name="url">/suivi-de-commande</field>
+            <field name="parent_id" ref="website.main_menu"/> <!-- Adds it to the main navbar -->
+            <field name="sequence" eval="50"/>
+        </record>
+    </data>
+</odoo>
