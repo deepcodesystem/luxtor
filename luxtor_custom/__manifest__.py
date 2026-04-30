@@ -11,7 +11,7 @@
     # Categories can be used to filter modules in modules listing
     # for the full list
     'category': 'sales',
-    'version': '0.2',
+    'version': '0.3',
     'post_init_hook': 'post_init_hook',
 
     # always loaded
@@ -24,6 +24,8 @@
         'project_mrp_sale',
         'helpdesk',
         'website_helpdesk',
+        'purchase',
+        'purchase_stock',
         ],
     'data': [
         'security/ir.model.access.csv',
