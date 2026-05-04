@@ -1,0 +1,29 @@
+/* lx_product_dimensions — dimension input fields */
+
+.lx-dim-field {
+    margin-bottom: 1rem;
+}
+
+.lx-dim-heading {
+    display: block !important;
+    text-transform: uppercase !important;
+    font-size: 0.82rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    color: #6b7280 !important;
+    margin: 0 0 0.5rem 0 !important;
+}
+
+.lx-dim-input {
+    width: 100%;
+    max-width: 220px;
+}
+
+#lx_width_hint,
+#lx_height_hint {
+    display: block;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 0.2rem;
+}
+

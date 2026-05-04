@@ -1,0 +1,17 @@
+<odoo>
+  <record id="view_sale_order_line_dims" model="ir.ui.view">
+    <field name="name">sale.order.line.dims</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <!-- Add Width / Height / Size columns after product in the order lines list -->
+      <xpath expr="//field[@name='order_line']//field[@name='product_template_id']"
+             position="after">
+        <field name="lx_width_m" string="Width (m)" optional="show"/>
+        <field name="lx_height_m" string="Height (m)" optional="show"/>
+        <field name="size" string="Size (m²)" readonly="1" optional="show"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>
+

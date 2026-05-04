@@ -1,0 +1,47 @@
+<odoo>
+  <record id="view_wizard_dimension_configurator_form" model="ir.ui.view">
+    <field name="name">wizard.dimension.configurator.form</field>
+    <field name="model">wizard.dimension.configurator</field>
+    <field name="arch" type="xml">
+      <form string="Configure Product Dimensions" create="false">
+        <sheet>
+          <field name="width_m"  invisible="1"/>
+          <field name="height_m" invisible="1"/>
+          <field name="order_id"        invisible="1"/>
+          <field name="order_line_id"   invisible="1"/>
+          <field name="product_tmpl_id" invisible="1"/>
+
+          <div class="o_row" style="align-items:center; gap:12px; margin:4px 0 8px;">
+            <field name="product_id" nolabel="1" readonly="1"
+                   style="font-weight:600;font-size:16px;max-width:650px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"/>
+          </div>
+
+          <div class="o_row" style="gap:12px;align-items:center;margin:6px 0;">
+            <label for="width" class="o_form_label">Width</label>
+            <field name="width" id="width" nolabel="1"/>
+            <field name="width_placeholder" nolabel="1" readonly="1" class="text-muted"/>
+          </div>
+
+          <div class="o_row" style="gap:12px;align-items:center;margin:6px 0;">
+            <label for="height" class="o_form_label">Height</label>
+            <field name="height" id="height" nolabel="1"/>
+            <field name="height_placeholder" nolabel="1" readonly="1" class="text-muted"/>
+          </div>
+
+          <div class="o_row" style="gap:12px;align-items:center;margin:6px 0;">
+            <label class="o_form_label" for="price_preview"
+                   style="font-weight:600;font-size:14px;">Price</label>
+            <h2 style="font-weight:700;font-size:16px;">
+              <field name="price_preview" id="price_preview" nolabel="1" readonly="1" widget="monetary"/>
+            </h2>
+          </div>
+        </sheet>
+        <footer>
+          <button name="action_confirm" string="Confirm" type="object" class="btn btn-primary"/>
+          <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>
+

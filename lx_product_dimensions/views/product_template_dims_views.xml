@@ -1,0 +1,148 @@
+<odoo>
+  <record id="view_product_template_dims" model="ir.ui.view">
+    <field name="name">product.template.form.lx.dims</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_only_form_view"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//sheet/notebook" position="inside">
+
+        <!-- ── Luxtor Data tab ──────────────────────────────────── -->
+        <page string="Data" name="lx_dims_data">
+          <group col="2">
+
+            <group string="COMPUTATION">
+              <label for="waste_rate"/>
+              <div class="o_row">
+                <field name="waste_rate" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">%</span>
+              </div>
+              <label for="added_margin"/>
+              <div class="o_row">
+                <field name="added_margin" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">%</span>
+              </div>
+              <label for="fabric_allowance"/>
+              <div class="o_row">
+                <field name="fabric_allowance" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">cm</span>
+              </div>
+              <label for="remenant_threshold"/>
+              <div class="o_row">
+                <field name="remenant_threshold" nolabel="1" class="oe_inline" string="Remnant Purge"/>
+                <span class="ms-2">cm</span>
+              </div>
+              <label for="remenant_tolerence"/>
+              <div class="o_row">
+                <field name="remenant_tolerence" nolabel="1" class="oe_inline" string="Remnant Tolerance"/>
+                <span class="ms-2">%</span>
+              </div>
+            </group>
+
+            <group string="TECHNICAL">
+              <label for="roller_width_ids"/>
+              <div class="o_row">
+                <field name="roller_width_ids" nolabel="1" widget="many2many_tags" class="oe_inline"/>
+                <span class="ms-2">cm</span>
+              </div>
+              <label for="maximum_load"/>
+              <div class="o_row">
+                <field name="maximum_load" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">kg</span>
+              </div>
+              <label for="openness_factor_id"/>
+              <div class="o_row">
+                <field name="openness_factor_id" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">%</span>
+              </div>
+              <label for="color_fastness_id"/>
+              <div class="o_row">
+                <field name="color_fastness_id" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">grade</span>
+              </div>
+              <label for="lx_fabric_ref_id"/>
+              <div class="o_row">
+                <field name="lx_fabric_ref_id" nolabel="1" options="{'no_create_edit': False}"/>
+              </div>
+              <label for="lx_weight"/>
+              <div class="o_row">
+                <field name="lx_weight" nolabel="1" class="oe_inline"/>
+                <span class="ms-2">g/m²</span>
+              </div>
+            </group>
+
+          </group>
+        </page>
+
+        <!-- ── Luxtor Config tab ────────────────────────────────── -->
+        <page string="Luxtor Config" name="lx_dims_config">
+          <group string="Config DATA">
+            <label for="max_height"/>
+            <div class="o_row">
+              <field name="max_height" nolabel="1" readonly="1" class="oe_inline"/>
+              <span class="ms-2">m</span>
+            </div>
+            <label for="is_dimension_product"/>
+            <div class="o_row">
+              <field name="is_dimension_product" nolabel="1"/>
+            </div>
+            <label for="lx_qty_by_width"/>
+            <div class="o_row">
+              <field name="lx_qty_by_width" nolabel="1" string="Quantity Controlled by Width"/>
+            </div>
+            <label for="lx_qty_by_height"/>
+            <div class="o_row">
+              <field name="lx_qty_by_height" nolabel="1" string="Quantity Controlled by Height"/>
+            </div>
+            <label for="width_cm"/>
+            <div class="o_row">
+              <field name="width_cm" nolabel="1" readonly="1" class="oe_inline"/>
+              <span class="ms-2">cm</span>
+            </div>
+          </group>
+
+          <group string="Component Flags">
+            <label for="is_mounting_bracket"/>
+            <div class="o_row">
+              <field name="is_mounting_bracket" nolabel="1"/>
+            </div>
+            <label for="lx_is_day_night"/>
+            <div class="o_row">
+              <field name="lx_is_day_night" nolabel="1"/>
+            </div>
+            <label for="lx_is_fabric"/>
+            <div class="o_row">
+              <field name="lx_is_fabric" nolabel="1"/>
+            </div>
+            <label for="lx_is_cassette"/>
+            <div class="o_row">
+              <field name="lx_is_cassette" nolabel="1"/>
+            </div>
+            <label for="lx_is_roller_tube"/>
+            <div class="o_row">
+              <field name="lx_is_roller_tube" nolabel="1"/>
+            </div>
+            <label for="lx_is_bottom_rail"/>
+            <div class="o_row">
+              <field name="lx_is_bottom_rail" nolabel="1"/>
+            </div>
+            <label for="lx_is_inner_tube"/>
+            <div class="o_row">
+              <field name="lx_is_inner_tube" nolabel="1"/>
+            </div>
+            <label for="lx_is_roller_mechanism"/>
+            <div class="o_row">
+              <field name="lx_is_roller_mechanism" nolabel="1"/>
+            </div>
+            <label for="lx_is_plastic_chain"/>
+            <div class="o_row">
+              <field name="lx_is_plastic_chain" nolabel="1"/>
+            </div>
+          </group>
+        </page>
+
+      </xpath>
+    </field>
+  </record>
+</odoo>
+
