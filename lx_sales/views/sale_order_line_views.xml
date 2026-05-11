@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Colonnes dims sur la liste des lignes de commande -->
+  <record id="view_sale_order_line_lx_dims_tree" model="ir.ui.view">
+    <field name="name">sale.order.line.lx_dims.form</field>
+    <field name="model">sale.order</field>
+    <field name="type">form</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='order_line']//field[@name='product_template_id']"
+             position="after">
+        <field name="lx_width_m" optional="show" string="W (m)"/>
+        <field name="lx_height_m" optional="show" string="H (m)"/>
+        <field name="size" optional="show" string="Surface (m²)"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

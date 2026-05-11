@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- ── mrp.bom : champs dims + coûts ── -->
+  <record id="view_mrp_bom_lx_dims_form" model="ir.ui.view">
+    <field name="name">mrp.bom.lx.dims.form</field>
+    <field name="model">mrp.bom</field>
+    <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+    <field name="arch" type="xml">
+
+      <!-- Dimensions après product_tmpl_id -->
+      <xpath expr="//field[@name='product_tmpl_id']" position="after">
+        <field name="width_mrp" string="Width (m)" optional="show"/>
+        <field name="height_mrp" string="Height (m)" optional="show"/>
+      </xpath>
+
+      <!-- Totaux coûts dans un group en bas de feuille -->
+      <xpath expr="//sheet" position="inside">
+        <group string="Coûts BoM" col="2">
+          <field name="currency_id" invisible="1"/>
+          <field name="lx_total_cost_price" readonly="1"/>
+          <field name="lx_total_amount" readonly="1"/>
+        </group>
+      </xpath>
+
+    </field>
+  </record>
+
+  <!-- ── mrp.bom.line : colonnes coûts dans la liste ── -->
+  <record id="view_mrp_bom_line_lx_cost_tree" model="ir.ui.view">
+    <field name="name">mrp.bom.line.lx.cost.tree</field>
+    <field name="model">mrp.bom</field>
+    <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
+        <field name="lx_unit_price" string="Unit Price" optional="show" readonly="1"/>
+        <field name="lx_cost_price" string="Cost" optional="show" readonly="1"/>
+        <field name="lx_waste_rate" string="Waste %" optional="show" readonly="1"/>
+        <field name="lx_added_margin" string="Margin %" optional="show" readonly="1"/>
+        <field name="lx_amount" string="Amount" optional="show" readonly="1"/>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>
+

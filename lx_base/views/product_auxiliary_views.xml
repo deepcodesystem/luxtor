@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_product_openness_factor_tree" model="ir.ui.view">
+    <field name="name">product.openness.factor.tree</field>
+    <field name="model">product.openness.factor</field>
+    <field name="arch" type="xml">
+      <list string="Openness Factors">
+        <field name="name"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_product_color_fastness_tree" model="ir.ui.view">
+    <field name="name">product.color.fastness.tree</field>
+    <field name="model">product.color.fastness</field>
+    <field name="arch" type="xml">
+      <list string="Color Fastness">
+        <field name="name"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_product_composition_tree" model="ir.ui.view">
+    <field name="name">product.composition.tree</field>
+    <field name="model">product.composition</field>
+    <field name="arch" type="xml">
+      <list string="Compositions">
+        <field name="name"/>
+        <field name="note"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Actions -->
+  <record id="action_product_openness_factor" model="ir.actions.act_window">
+    <field name="name">Openness Factors</field>
+    <field name="res_model">product.openness.factor</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="action_product_color_fastness" model="ir.actions.act_window">
+    <field name="name">Color Fastness</field>
+    <field name="res_model">product.color.fastness</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <record id="action_product_composition" model="ir.actions.act_window">
+    <field name="name">Compositions</field>
+    <field name="res_model">product.composition</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>
+

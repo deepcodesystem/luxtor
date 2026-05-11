@@ -24,11 +24,11 @@
         'views/product_auxiliary_views.xml',
         'views/product_template_dims_views.xml',
         'views/sale_order_line_dims_views.xml',
+        'views/website_sale_dims_templates.xml',
         'wizards/wizard_dimension_configurator_views.xml',
     ],
     'assets': {
         'web.assets_frontend': [
-            'lx_product_dimensions/static/src/js/lx_dimensions_hints.js',
             'lx_product_dimensions/static/src/js/lx_dim_validation.js',
             'lx_product_dimensions/static/src/js/lx_price_live.js',
             'lx_product_dimensions/static/src/css/lx_dim_inputs.css',

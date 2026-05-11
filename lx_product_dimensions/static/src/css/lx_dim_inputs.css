@@ -27,3 +27,8 @@
     margin-top: 0.2rem;
 }
 
+/* Indicateur de chargement prix */
+.lx-price-loading {
+    opacity: 0.35;
+    transition: opacity 0.15s ease-in-out;
+}

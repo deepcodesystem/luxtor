@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_roller_width_user,roller.width user,model_roller_width,base.group_user,1,0,0,0
+access_roller_width_manager,roller.width manager,model_roller_width,base.group_system,1,1,1,1
+access_product_openness_factor_user,product.openness.factor user,model_product_openness_factor,base.group_user,1,0,0,0
+access_product_openness_factor_manager,product.openness.factor manager,model_product_openness_factor,base.group_system,1,1,1,1
+access_product_color_fastness_user,product.color.fastness user,model_product_color_fastness,base.group_user,1,0,0,0
+access_product_color_fastness_manager,product.color.fastness manager,model_product_color_fastness,base.group_system,1,1,1,1
+access_product_composition_user,product.composition user,model_product_composition,base.group_user,1,0,0,0
+access_product_composition_manager,product.composition manager,model_product_composition,base.group_system,1,1,1,1
+

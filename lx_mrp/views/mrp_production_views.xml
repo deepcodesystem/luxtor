@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- ── mrp.production : champs dims + orientation + coûts ── -->
+  <record id="view_mrp_production_lx_dims_form" model="ir.ui.view">
+    <field name="name">mrp.production.lx.dims.form</field>
+    <field name="model">mrp.production</field>
+    <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+    <field name="arch" type="xml">
+
+      <!-- Dimensions après product_qty -->
+      <xpath expr="//field[@name='product_tmpl_id']" position="after">
+        <field name="lx_width_m" string="Width (m)"/>
+        <field name="lx_height_m" string="Height (m)"/>
+        <field name="lx_orientation" string="Orientation" readonly="1"/>
+        <field name="lx_roll_width_best" string="Roll Width (m)" readonly="1"/>
+      </xpath>
+
+      <!-- Totaux coûts en bas de feuille -->
+      <xpath expr="//sheet" position="inside">
+        <group string="Coûts OF" col="2" invisible="not lx_width_m and not lx_height_m">
+          <field name="currency_id" invisible="1"/>
+          <field name="lx_total_cost_price" readonly="1"/>
+          <field name="lx_total_amount" readonly="1"/>
+        </group>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>
+

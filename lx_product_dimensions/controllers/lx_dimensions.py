@@ -74,7 +74,7 @@ class LxDimensionsController(http.Controller):
         except Exception:
             return float(getattr(tmpl, "max_height", 0.0) or 0.0)
 
-    @http.route("/lx/dimensions/hints", type="json", auth="public", website=True, csrf=False)
+    @http.route("/lx/dimensions/hints", type="jsonrpc", auth="public", website=True, csrf=False)
     def dimensions_hints(self, product_id=None, product_tmpl_id=None, width=None, unit="m"):
         env = request.env
         Product = env["product.product"].sudo()

@@ -19,6 +19,7 @@
           <div class="o_row" style="gap:12px;align-items:center;margin:6px 0;">
             <label for="width" class="o_form_label">Width</label>
             <field name="width" id="width" nolabel="1"/>
+            <field name="dimension_unit" nolabel="1" widget="radio" style="display:inline-flex;gap:8px;"/>
             <field name="width_placeholder" nolabel="1" readonly="1" class="text-muted"/>
           </div>
 

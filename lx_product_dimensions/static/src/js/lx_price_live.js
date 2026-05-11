@@ -20,7 +20,8 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
         this._ensureDebugBox();
         this._ensureLocationField();
         this._loadLocationOptions();
-        this._refresh();
+        this._ensureFinalPriceInput();
+        // Pas de _refresh() au chargement : le prix Odoo est déjà affiché
         return res;
     },
 
@@ -108,7 +109,11 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
         }
         try {
             const locations = await rpc("/lx/configurator/locations", {});
-            if (!Array.isArray(locations) || !locations.length) return;
+            if (!Array.isArray(locations) || !locations.length) {
+                // Route absente ou vide → masquer le champ location
+                this._hideLocationField();
+                return;
+            }
             const currentValue = parseInt(select.value || "0", 10) || 0;
             const other = locations.find((l) => (l.name || "").trim().toLowerCase() === "other");
             const selectedValue = currentValue || (other && other.id) || locations[0].id;
@@ -123,8 +128,16 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
             select.dataset.lxLocationLoaded = "1";
             this._storeDimsInSession();
         } catch (e) {
-            console.warn("[LxVirtualPriceDebug] location load failed", e);
+            // Route non disponible (module non installé) → masquer le champ
+            this._hideLocationField();
         }
+    },
+
+    _hideLocationField() {
+        const select = document.querySelector("#lx_location_input");
+        if (!select) return;
+        const wrapper = select.closest(".lx-dim-field");
+        if (wrapper) wrapper.style.display = "none";
     },
 
     async _refresh() {
@@ -133,24 +146,32 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
         const pid = this._currentVariantId();
         let { width, height } = this._readDims();
 
-        if (!width && !height) { width = 1; height = 1; }
-        else {
-            if (!width)  width  = 1;
-            if (!height) height = 1;
-        }
+        // Ne pas appeler le RPC si aucune dimension saisie
+        if (!width && !height) return;
+        if (!width)  width  = 1;
+        if (!height) height = 1;
+
+        const priceNode = this._priceNode();
+        if (priceNode) priceNode.classList.add("lx-price-loading");
 
         try {
             const data = await rpc("/shop/lx_virtual_price", { product_id: pid, width, height });
-            if (!data || !data.ok) return;
+            if (!data || !data.ok) {
+                if (priceNode) priceNode.classList.remove("lx-price-loading");
+                return;
+            }
 
             const hidden = this._ensureFinalPriceInput();
             if (hidden) hidden.value = Number(data.final_unit_price || 0).toFixed(2);
 
             if (data.final_unit_price && Number(data.final_unit_price) > 0) {
                 this._updatePagePrice(data.final_unit_price);
+            } else {
+                if (priceNode) priceNode.classList.remove("lx-price-loading");
             }
         } catch (e) {
             if (box) box.classList.add("d-none");
+            if (priceNode) priceNode.classList.remove("lx-price-loading");
         }
     },
 
@@ -170,6 +191,7 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
         const node = this._priceNode();
         const v = Number(newPrice);
         if (!node || !Number.isFinite(v) || v <= 0) return;
+        node.classList.remove("lx-price-loading");
         node.textContent = v.toFixed(2);
         const schemaPrice = document.querySelector('#product_details [itemprop="price"]');
         if (schemaPrice && schemaPrice.hasAttribute('content')) {
@@ -178,8 +200,9 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
     },
 
     _onDimsChange() {
-        this._refresh();
         this._storeDimsInSession();
+        clearTimeout(this._dimTimer);
+        this._dimTimer = setTimeout(() => this._refresh(), 300);
     },
 
     _storeDimsInSession() {
@@ -201,7 +224,10 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
     },
 
     _onVariantChange() {
-        setTimeout(() => this._refresh(), 60);
+        const { width, height } = this._readDims();
+        if (width || height) {
+            setTimeout(() => this._refresh(), 60);
+        }
     },
 
     _onLocationChange() {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="lx_product_dims_widget" inherit_id="website_sale.product" name="LX Dimension Inputs">
+
+    <!--
+      1. Inputs Width / Height — injectés APRÈS le div prix
+         (le div _price a class= fixe, pas t-attf-class, donc xpath fonctionne)
+         Position choisie pour rester HORS du div attributes qui devient d-none
+         quand le produit n'a pas de variantes.
+    -->
+    <xpath expr="//div[contains(@class,'o_wsale_product_details_content_section_price')]"
+           position="after">
+      <t t-if="product.is_dimension_product or product.lx_fabric_ref_id">
+        <div id="lx_dims_express" class="o_wsale_product_details_content_section mb-3">
+
+          <!-- WIDTH -->
+          <div class="lx-dim-field">
+            <h6 class="attribute_name mb-2 lx-dim-heading">
+              <span>WIDTH</span>
+              <span class="notificationmessage" data-tooltip="Enter the width of your window"> ?</span>
+            </h6>
+            <label for="lx_width_input" class="visually-hidden">Width</label>
+            <input id="lx_width_input"
+                   type="number" step="0.01" min="0.60"
+                   class="form-control js-lx-width lx-dim-input"
+                   name="lx_width_m"
+                   placeholder="min: 0.60 m"
+                   inputmode="decimal"/>
+            <span id="lx_width_hint" class="form-text text-muted small"/>
+          </div>
+
+          <!-- HEIGHT -->
+          <div class="lx-dim-field">
+            <h6 class="attribute_name mb-2 lx-dim-heading">
+              <span>HEIGHT</span>
+              <span class="notificationmessage" data-tooltip="Enter the height of your window"> ?</span>
+            </h6>
+            <label for="lx_height_input" class="visually-hidden">Height</label>
+            <input id="lx_height_input"
+                   type="number" step="0.01" min="0.90"
+                   class="form-control js-lx-height lx-dim-input"
+                   name="lx_height_m"
+                   placeholder="min: 0.90 m"
+                   inputmode="decimal"/>
+            <span id="lx_height_hint" class="form-text text-muted small"/>
+          </div>
+
+        </div>
+      </t>
+    </xpath>
+
+    <!--
+      2. Label "From" avant le prix
+    -->
+    <xpath expr="//t[@t-call='website_sale.product_price']" position="before">
+      <t t-if="product.is_dimension_product or product.lx_fabric_ref_id">
+        <span class="lx_from_label me-1"
+              style="font-weight:700;font-size:1.4rem;line-height:1.2;color:#3b82f6;vertical-align:baseline;">From</span>
+      </t>
+    </xpath>
+
+  </template>
+</odoo>
+

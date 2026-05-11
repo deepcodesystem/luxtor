@@ -126,7 +126,7 @@ class SaleOrderLine(models.Model):
 
     def _lx_partner_rank_factor(self):
         partner = self.order_id.partner_id if self.order_id else False
-        at = partner.lx_account_type_id if partner else False
+        at = getattr(partner, 'lx_account_type_id', False) if partner else False
         if not at:
             return 1.0
         try:
@@ -135,20 +135,16 @@ class SaleOrderLine(models.Model):
             return 1.0
 
     def _lx_virtual_total_for_width(self, product, width_m):
-        Mrp = self.env['mrp.production']
         bom = self._lx_find_bom_local(product)
         if not bom:
             return 0.0
-        mo = Mrp.new({
+        mo = self.env['mrp.production'].new({
             'company_id': (self.order_id.company_id.id if self.order_id else self.env.company.id),
             'product_id': product.id,
             'bom_id': bom.id,
-            'lx_width_m': width_m,
+            'lx_width_m': float(width_m or 1.0),
         })
-        calc = getattr(mo, '_lx_virtual_calculate', None)
-        if not calc:
-            return 0.0
-        _cost, amount = calc(width_m=width_m)
+        _cost, amount = mo._lx_virtual_calculate(width_m=float(width_m or 1.0))
         return amount
 
     def _lx_compute_price_unit_like_wizard(self):
@@ -193,21 +189,8 @@ class SaleOrderLine(models.Model):
     def _compute_max_height_from_width(self, tmpl, width_m):
         if not tmpl:
             return 0.0
-        divisor = 1.0
-        cat = tmpl.categ_id
-        if cat and "Day & Night" in (cat.name or ""):
-            divisor = 2.0
-        fabric = getattr(tmpl, 'lx_fabric_ref_id', False)
-        weight = float(
-            getattr(fabric, 'lx_weight', 0.0) or getattr(tmpl, 'lx_weight', 0.0) or 0.0
-        )
-        mech = self.env['product.template'].search([('default_code', '=', 'MS')], limit=1)
-        load = float(getattr(mech, 'maximum_load', 0.0) or 0.0)
-        width_cm = max(0.0, float(width_m or 0.0) * 100.0)
-        if width_cm <= 0.0 or weight <= 0.0 or load <= 0.0 or divisor <= 0.0:
-            return 0.0
-        h_m = (load / (width_cm * weight)) / divisor * 100000.0
-        return max(0.0, round(h_m, 4))
+        res = tmpl._lx_max_height_from_width(float(width_m or 0.0))
+        return res.get(tmpl.id, 0.0)
 
     def _lx_validate_dimensions(self, width_m=None, height_m=None):
         self.ensure_one()

@@ -172,8 +172,8 @@ publicWidget.registry.LxVirtualPriceDebug = publicWidget.Widget.extend({
                 const txt = (data && data.message) || "Error.";
                 return;
             }
-            
-            
+
+
 
             const msg =
                 `Virtual unit price (w=1.00): ${data.unit_virtual.toFixed(2)}\n` +

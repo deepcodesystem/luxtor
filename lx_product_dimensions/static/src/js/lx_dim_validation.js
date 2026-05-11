@@ -168,8 +168,16 @@ publicWidget.registry.LxDimensionsLiveValidation = publicWidget.Widget.extend({
                 if (heightHintEl) heightHintEl.textContent = data.height?.hint || "";
                 const wInput = document.querySelector("#lx_width_input");
                 const hInput = document.querySelector("#lx_height_input");
-                if (wInput && data.width?.hint)  wInput.placeholder  = data.width.hint;
-                if (hInput && data.height?.hint) hInput.placeholder  = data.height.hint;
+                if (wInput) {
+                    if (data.width?.hint)  wInput.placeholder = data.width.hint;
+                    if (data.width?.min_m) wInput.min = data.width.min_m;
+                    if (data.width?.max_m) wInput.max = data.width.max_m;
+                }
+                if (hInput) {
+                    if (data.height?.hint)  hInput.placeholder = data.height.hint;
+                    if (data.height?.min_m) hInput.min = data.height.min_m;
+                    if (data.height?.max_m) hInput.max = data.height.max_m;
+                }
                 this._ranges = {
                     min_w: Number(data.width?.min_m  || 0.60),
                     max_w: Number(data.width?.max_m  || 0),

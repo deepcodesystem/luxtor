@@ -33,7 +33,6 @@ class LxConfiguratorInfo(http.Controller):
     def _lx_price_for_variant(self, tmpl, product, width_m, partner, motor_variant_id=None):
         """Virtual unit price for a variant. Returns amount * partner_factor."""
         env = request.env
-        Mrp = env['mrp.production'].sudo()
         Bom = env['mrp.bom'].sudo()
 
         variant = product or tmpl.product_variant_id
@@ -61,16 +60,14 @@ class LxConfiguratorInfo(http.Controller):
                 pass
 
         try:
+            Mrp = env['mrp.production'].sudo()
             mo = Mrp.new({
                 'company_id': env.company.id,
                 'product_id': variant.id,
                 'bom_id': bom.id,
                 'lx_width_m': float(width_m or 1.0),
             })
-            calc = getattr(mo, '_lx_virtual_calculate', None)
-            if not calc:
-                return 0.0
-            _cost, amount = calc(
+            _cost, amount = mo._lx_virtual_calculate(
                 width_m=float(width_m or 1.0),
                 idler_variant_id=idler_variant_id,
                 skip_tubular_motor=skip_tubular_motor,
@@ -131,7 +128,7 @@ class LxConfiguratorInfo(http.Controller):
             )
             return 0.0
 
-    @http.route('/lx/configurator/info', type='json', auth='user')
+    @http.route('/lx/configurator/info', type='jsonrpc', auth='user')
     def lx_configurator_info(self, product_tmpl_id, width, product_id=None,
                              motor_variant_id=None, order_id=None):
         try:

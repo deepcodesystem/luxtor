@@ -261,7 +261,7 @@ class ProductTemplate(models.Model):
         """Return {tmpl_id: max_h_m}."""
         res = {}
         mech = self.env["product.template"].sudo().search(
-            [("default_code", "=", "MS")], limit=1
+            [("lx_is_roller_mechanism", "=", True)], limit=1
         )
         load = float(getattr(mech, "maximum_load", 0.0) or 0.0)
 

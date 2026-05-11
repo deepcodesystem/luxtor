@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_roller_width_tree" model="ir.ui.view">
+    <field name="name">roller.width.tree</field>
+    <field name="model">roller.width</field>
+    <field name="arch" type="xml">
+      <list string="Roller Widths" editable="bottom">
+        <field name="name"/>
+        <field name="value_cm"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_roller_width" model="ir.actions.act_window">
+    <field name="name">Roller Widths</field>
+    <field name="res_model">roller.width</field>
+    <field name="view_mode">list</field>
+  </record>
+</odoo>
+
