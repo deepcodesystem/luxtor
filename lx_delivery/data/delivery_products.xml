@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Produit service : Livraison -->
+    <record id="prod_shipping_service_tmpl" model="product.template">
+        <field name="name">Livraison</field>
+        <field name="type">service</field>
+        <field name="default_code">SHIPPING_SERVICE</field>
+        <field name="list_price">0.0</field>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+    </record>
+
+    <!-- Produit service : Livraison Offerte -->
+    <record id="prod_free_delivery_tmpl" model="product.template">
+        <field name="name">Livraison Offerte</field>
+        <field name="type">service</field>
+        <field name="default_code">FREE_DELIVERY</field>
+        <field name="list_price">0.0</field>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+    </record>
+
+</odoo>
+

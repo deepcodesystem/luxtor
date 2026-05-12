@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 1. lx_delivery_form_heading — remplace le h4 du formulaire de livraison -->
+    <template id="lx_delivery_form_heading" inherit_id="website_sale.delivery_form">
+        <xpath expr="//h4" position="replace">
+            <h4>Choose a Delivery Method</h4>
+        </xpath>
+    </template>
+
+    <!-- 2. lx_delivery_offer_panel — panneau "Offre" avec seuil free affiché -->
+    <template id="lx_delivery_offer_panel" inherit_id="website_sale.delivery_form">
+        <xpath expr="//ul[@id='o_delivery_methods']" position="before">
+            <t t-if="lx_free_threshold">
+                <div class="lx-delivery-offer-wrap mb-3">
+                    <div class="lx-delivery-offer-box px-3 py-2 rounded border">
+                        <div class="lx-delivery-offer-line d-flex align-items-center gap-2">
+                            <span class="text-success fw-semibold">🎁 Offre</span>
+                            <span>
+                                Livraison gratuite dès
+                                <strong>
+                                    <t t-esc="lx_free_threshold"/>
+                                    <t t-esc="request.website.currency_id.symbol"/>
+                                </strong>
+                                d'achat éligible.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- 3. lx_delivery_free_banner — bandeau "Livraison offerte" si applicable -->
+    <template id="lx_delivery_free_banner" inherit_id="website_sale.delivery_form">
+        <xpath expr="//ul[@id='o_delivery_methods']" position="before">
+            <t t-if="lx_free_applies">
+                <div class="lx-info-banner mb-3">
+                    🎉 <strong>Félicitations !</strong>
+                    Vous bénéficiez de la <strong>livraison gratuite</strong> sur cette commande.
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- 4. lx_delivery_method_structure — enrichit chaque ligne transporteur -->
+    <template id="lx_delivery_method_structure" inherit_id="website_sale.delivery_method">
+        <!-- Ajoute la classe lx-delivery-price-badge sur le badge prix (name="price") -->
+        <xpath expr="//span[@name='price']" position="attributes">
+            <attribute name="class">o_wsale_delivery_price_badge lx-delivery-price-badge text-muted fw-bold text-end</attribute>
+        </xpath>
+        <!-- Ajoute le sous-titre transporteur sous le nom -->
+        <xpath expr="//span[@name='o_delivery_method_name']" position="after">
+            <t t-if="dm.lx_carrier">
+                <div class="lx-delivery-subtitle text-muted small mt-1">
+                    <t t-esc="dm.lx_get_checkout_description()"/>
+                    <span class="lx-delivery-provider-tag badge bg-light text-dark ms-1">
+                        <t t-esc="dm.lx_get_checkout_provider_value()"/>
+                    </span>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>
+

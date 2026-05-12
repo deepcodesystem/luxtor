@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ── shipping.rate form ────────────────────────────────────── -->
+        <record id="view_shipping_rate_form" model="ir.ui.view">
+            <field name="name">shipping.rate.form</field>
+            <field name="model">shipping.rate</field>
+            <field name="arch" type="xml">
+                <form string="Shipping Rate">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="zip_code"/>
+                                <field name="province"/>
+                            </group>
+                            <group>
+                                <field name="price"/>
+                                <field name="delivery_eta"/>
+                                <field name="is_intracity"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ── shipping.rate list ────────────────────────────────────── -->
+        <record id="view_shipping_rate_list" model="ir.ui.view">
+            <field name="name">shipping.rate.list</field>
+            <field name="model">shipping.rate</field>
+            <field name="arch" type="xml">
+                <list string="Shipping Rates" editable="bottom">
+                    <field name="name"/>
+                    <field name="zip_code"/>
+                    <field name="province"/>
+                    <field name="price"/>
+                    <field name="delivery_eta"/>
+                    <field name="is_intracity"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ── shipping.rate search ──────────────────────────────────── -->
+        <record id="view_shipping_rate_search" model="ir.ui.view">
+            <field name="name">shipping.rate.search</field>
+            <field name="model">shipping.rate</field>
+            <field name="arch" type="xml">
+                <search string="Shipping Rates">
+                    <field name="name" string="City"/>
+                    <field name="zip_code"/>
+                    <field name="province"/>
+                    <filter string="Intracity" name="intracity" domain="[('is_intracity','=',True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- ── delivery.bracket.lx form ─────────────────────────────── -->
+        <record id="view_delivery_bracket_lx_form" model="ir.ui.view">
+            <field name="name">delivery.bracket.lx.form</field>
+            <field name="model">delivery.bracket.lx</field>
+            <field name="arch" type="xml">
+                <form string="Weight Bracket">
+                    <sheet>
+                        <group>
+                            <field name="kind"/>
+                            <field name="min_kg"/>
+                            <field name="max_kg"/>
+                            <field name="unit_price"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ── delivery.bracket.lx list ─────────────────────────────── -->
+        <record id="view_delivery_bracket_lx_list" model="ir.ui.view">
+            <field name="name">delivery.bracket.lx.list</field>
+            <field name="model">delivery.bracket.lx</field>
+            <field name="arch" type="xml">
+                <list string="Weight Brackets" editable="bottom">
+                    <field name="kind"/>
+                    <field name="min_kg"/>
+                    <field name="max_kg"/>
+                    <field name="unit_price"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ── Actions ───────────────────────────────────────────────── -->
+        <record id="action_shipping_rate" model="ir.actions.act_window">
+            <field name="name">Standard Delivery (City)</field>
+            <field name="res_model">shipping.rate</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record id="action_delivery_bracket_lx" model="ir.actions.act_window">
+            <field name="name">Express Delivery (Weight)</field>
+            <field name="res_model">delivery.bracket.lx</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- ── Menus sous sale.menu_sale_config ──────────────────────── -->
+        <menuitem id="menu_lx_shipping_rates"
+                  name="Standard Delivery (City)"
+                  parent="sale.menu_sale_config"
+                  action="action_shipping_rate"
+                  sequence="30"/>
+
+        <menuitem id="menu_lx_delivery_brackets"
+                  name="Express Delivery (Weight)"
+                  parent="sale.menu_sale_config"
+                  action="action_delivery_bracket_lx"
+                  sequence="35"/>
+
+    </data>
+</odoo>
+

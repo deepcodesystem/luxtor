@@ -15,6 +15,24 @@ PLASTIC_CHAIN_200_CODE = "BFPC-200"
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
+    # ---------- Basic fields ----------
+    #luxtor_location_id = fields.Many2one("luxtor.location", string="Location")
+    lx_control_side = fields.Selection(
+        [('right', 'Right'), ('left', 'Left')],
+        string='Control Side',
+        default='right'
+    )
+    lx_roll_direction = fields.Selection(
+        [('standard', 'Standard'), ('reverse', 'Reverse')],
+        string='Roll Direction',
+        default='standard'
+    )
+    lx_fitting_method = fields.Selection(
+        [('wall', 'Wall Mount'), ('ceiling', 'Ceiling Mount')],
+        string='Fitting Method',
+        default='wall'
+    )
+
     # ── Dimensions ────────────────────────────────────────────────────────────
     lx_width_m = fields.Float(string="Width (m)", digits=(16, 4))
     lx_height_m = fields.Float(string="Height (m)", digits=(16, 4))

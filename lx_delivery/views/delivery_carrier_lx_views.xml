@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ── Form delivery.carrier.lx ──────────────────────────────── -->
+        <record id="view_delivery_carrier_lx_form" model="ir.ui.view">
+            <field name="name">delivery.carrier.lx.form</field>
+            <field name="model">delivery.carrier.lx</field>
+            <field name="arch" type="xml">
+                <form string="LX Delivery Config">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="carrier_id"/>
+                                <field name="mode"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="free_threshold"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Weight Brackets" name="brackets"
+                                  invisible="mode != 'express'">
+                                <field name="bracket_ids">
+                                    <list editable="bottom">
+                                        <field name="kind"/>
+                                        <field name="min_kg"/>
+                                        <field name="max_kg"/>
+                                        <field name="unit_price"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ── List delivery.carrier.lx ──────────────────────────────── -->
+        <record id="view_delivery_carrier_lx_list" model="ir.ui.view">
+            <field name="name">delivery.carrier.lx.list</field>
+            <field name="model">delivery.carrier.lx</field>
+            <field name="arch" type="xml">
+                <list string="LX Delivery Configs">
+                    <field name="carrier_id"/>
+                    <field name="mode"/>
+                    <field name="free_threshold"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ── Action delivery.carrier.lx ────────────────────────────── -->
+        <record id="action_delivery_carrier_lx" model="ir.actions.act_window">
+            <field name="name">LX Delivery Configs</field>
+            <field name="res_model">delivery.carrier.lx</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- ── Inherit delivery.carrier : ajout onglet LX ───────────── -->
+        <record id="view_delivery_carrier_lx_inherit" model="ir.ui.view">
+            <field name="name">delivery.carrier.lx.inherit</field>
+            <field name="model">delivery.carrier</field>
+            <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Luxtor Config" name="lx_config">
+                        <group>
+                            <field name="lx_carrier" string="Provider (LX)"/>
+                        </group>
+                        <field name="lx_carrier_lx_ids">
+                            <list>
+                                <field name="mode"/>
+                                <field name="free_threshold"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ── Menus ─────────────────────────────────────────────────── -->
+        <menuitem id="menu_delivery_carrier_lx"
+                  name="LX Delivery Configs"
+                  parent="sale.menu_sale_config"
+                  action="action_delivery_carrier_lx"
+                  sequence="52"/>
+
+    </data>
+</odoo>
+

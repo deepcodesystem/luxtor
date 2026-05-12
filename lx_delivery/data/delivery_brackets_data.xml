@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ── Intracity ──────────────────────────────────────── -->
+    <record id="lx_bracket_express_intra_0_2" model="delivery.bracket.lx">
+        <field name="kind">intra</field>
+        <field name="min_kg">0</field>
+        <field name="max_kg">2</field>
+        <field name="unit_price">30</field>
+    </record>
+
+    <record id="lx_bracket_express_intra_2_5" model="delivery.bracket.lx">
+        <field name="kind">intra</field>
+        <field name="min_kg">2</field>
+        <field name="max_kg">5</field>
+        <field name="unit_price">35</field>
+    </record>
+
+    <record id="lx_bracket_express_intra_5_10" model="delivery.bracket.lx">
+        <field name="kind">intra</field>
+        <field name="min_kg">5</field>
+        <field name="max_kg">10</field>
+        <field name="unit_price">40</field>
+    </record>
+
+    <record id="lx_bracket_express_intra_10_15" model="delivery.bracket.lx">
+        <field name="kind">intra</field>
+        <field name="min_kg">10</field>
+        <field name="max_kg">15</field>
+        <field name="unit_price">55</field>
+    </record>
+
+    <record id="lx_bracket_express_intra_15_31" model="delivery.bracket.lx">
+        <field name="kind">intra</field>
+        <field name="min_kg">15</field>
+        <field name="max_kg">31</field>
+        <field name="unit_price">75</field>
+    </record>
+
+    <!-- ── Intercity ─────────────────────────────────────── -->
+    <record id="lx_bracket_express_inter_0_2" model="delivery.bracket.lx">
+        <field name="kind">inter</field>
+        <field name="min_kg">0</field>
+        <field name="max_kg">2</field>
+        <field name="unit_price">40</field>
+    </record>
+
+    <record id="lx_bracket_express_inter_2_5" model="delivery.bracket.lx">
+        <field name="kind">inter</field>
+        <field name="min_kg">2</field>
+        <field name="max_kg">5</field>
+        <field name="unit_price">45</field>
+    </record>
+
+    <record id="lx_bracket_express_inter_5_10" model="delivery.bracket.lx">
+        <field name="kind">inter</field>
+        <field name="min_kg">5</field>
+        <field name="max_kg">10</field>
+        <field name="unit_price">55</field>
+    </record>
+
+    <record id="lx_bracket_express_inter_10_15" model="delivery.bracket.lx">
+        <field name="kind">inter</field>
+        <field name="min_kg">10</field>
+        <field name="max_kg">15</field>
+        <field name="unit_price">75</field>
+    </record>
+
+    <record id="lx_bracket_express_inter_15_31" model="delivery.bracket.lx">
+        <field name="kind">inter</field>
+        <field name="min_kg">15</field>
+        <field name="max_kg">31</field>
+        <field name="unit_price">95</field>
+    </record>
+
+</odoo>
+
