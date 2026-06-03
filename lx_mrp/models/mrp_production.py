@@ -60,6 +60,14 @@ class MrpProduction(models.Model):
         currency_field='currency_id',
     )
 
+    # ── Sale Order ────────────────────────────────────────────────────────────
+    sale_id = fields.Many2one(
+        'sale.order',
+        string='Sale Order',
+        copy=False,
+        index=True,
+    )
+
     # ── Totaux ────────────────────────────────────────────────────────────────
 
     @api.depends('move_raw_ids.lx_cost_price', 'move_raw_ids.lx_amount')

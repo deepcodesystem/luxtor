@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_remnant_category_rule_user,remnant.category.rule user,model_remnant_category_rule,base.group_user,1,1,1,0
+access_remnant_stock_user,remnant.stock user,model_remnant_stock,base.group_user,1,1,1,0
+access_remnant_fetch_request_user,remnant.fetch.request user,model_remnant_fetch_request,base.group_user,1,1,1,0

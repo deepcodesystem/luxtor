@@ -81,7 +81,26 @@ class ProductTemplate(models.Model):
     lx_is_component = fields.Boolean(string="Composant", default=False)
 
     # ── Dimensions produit ────────────────────────────────────────────────────
-    is_dimension_product = fields.Boolean(string="Dimension Product", default=False)
+    is_dimension_product = fields.Boolean(
+        string="Dimension Product",
+        default=False,
+        help="If checked, this product requires dimension attributes (Width/Height)."
+    )
+
+    # Attributs dimension (largeur/hauteur) pour produits sur mesure
+    lx_width_attribute_id = fields.Many2one(
+        'product.attribute',
+        string="Width Attribute",
+        domain="[('id', '=', %(lx_base.product_attribute_width_m)d)]",
+        help="Width attribute for dimension products"
+    )
+
+    lx_height_attribute_id = fields.Many2one(
+        'product.attribute',
+        string="Height Attribute",
+        domain="[('id', '=', %(lx_base.product_attribute_height_m)d)]",
+        help="Height attribute for dimension products"
+    )
 
     width_cm = fields.Float(
         string="Max Width (cm)",
@@ -205,6 +224,49 @@ class ProductTemplate(models.Model):
                 if fabric:
                     tmpl.lx_fabric_ref_id = fabric
 
+    @api.onchange('is_dimension_product')
+    def _onchange_is_dimension_product(self):
+        """
+        Ajoute automatiquement les attributs Largeur/Hauteur quand on coche
+        is_dimension_product=True.
+        """
+        if not self.is_dimension_product:
+            return
+
+        # Récupérer les attributs dimension
+        width_attr = self.env.ref('lx_base.product_attribute_width_m', raise_if_not_found=False)
+        height_attr = self.env.ref('lx_base.product_attribute_height_m', raise_if_not_found=False)
+
+        if not width_attr or not height_attr:
+            return
+
+        # Vérifier si les attributs existent déjà
+        existing_attrs = self.attribute_line_ids.mapped('attribute_id')
+
+        # Créer les lignes d'attributs si elles n'existent pas
+        lines_to_add = []
+
+        if width_attr not in existing_attrs:
+            # Récupérer la valeur custom pour width
+            width_value = width_attr.value_ids.filtered(lambda v: v.is_custom)[:1]
+            if width_value:
+                lines_to_add.append((0, 0, {
+                    'attribute_id': width_attr.id,
+                    'value_ids': [(6, 0, [width_value.id])],
+                }))
+
+        if height_attr not in existing_attrs:
+            # Récupérer la valeur custom pour height
+            height_value = height_attr.value_ids.filtered(lambda v: v.is_custom)[:1]
+            if height_value:
+                lines_to_add.append((0, 0, {
+                    'attribute_id': height_attr.id,
+                    'value_ids': [(6, 0, [height_value.id])],
+                }))
+
+        if lines_to_add:
+            self.attribute_line_ids = lines_to_add
+
     # =========================================================================
     # API PUBLIQUE — utilisée par lx_sales, lx_mrp, lx_website_dims
     # =========================================================================
@@ -257,4 +319,35 @@ class ProductTemplate(models.Model):
             'max_width_m': max_w,
             'min_height_m': LX_MIN_HEIGHT_M,
             'max_height_m': max_h,
+        }
+
+    def lx_sync_attribute_prices_from_components(self):
+        """
+        Recalcule et synchronise tous les price_extra des attributs en mode 'auto'.
+        Appelé manuellement via bouton sur fiche produit ou automatiquement
+        quand un composant change.
+        """
+        self.ensure_one()
+        count = 0
+        for line in self.attribute_line_ids:
+            for ptav in line.product_template_value_ids:
+                if ptav.lx_price_mode == 'auto':
+                    # Force recalcul
+                    ptav._compute_lx_computed_price()
+                    computed = ptav.lx_computed_price
+                    current = ptav.price_extra
+                    if abs(computed - current) > 0.01:
+                        ptav.with_context(lx_skip_auto_price_sync=True).write({
+                            'price_extra': computed
+                        })
+                        count += 1
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'message': f'{count} attribute price(s) synchronized from components.',
+                'type': 'success' if count > 0 else 'info',
+                'sticky': False,
+            }
         }

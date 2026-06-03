@@ -11,7 +11,7 @@
     'author': "Luxtor",
     'category': 'Manufacturing',
     'version': '19.0.1.0.0',
-    'depends': ['lx_base', 'mrp', 'stock'],
+    'depends': ['lx_base', 'sale_management', 'mrp', 'stock'],
     'data': [
         'security/ir.model.access.csv',
         'views/mrp_bom_views.xml',

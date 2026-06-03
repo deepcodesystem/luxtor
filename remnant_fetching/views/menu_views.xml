@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_remnant_root" name="Remnants" parent="stock.menu_stock_root" sequence="80"/>
+    <menuitem id="menu_remnant_stock" name="Remnant Stock" parent="menu_remnant_root" action="action_remnant_stock" sequence="10"/>
+    <menuitem id="menu_remnant_fetch_request" name="Picking Requests" parent="menu_remnant_root" action="action_remnant_fetch_request" sequence="20"/>
+    <menuitem id="menu_remnant_category_rule" name="Category Rules" parent="menu_remnant_root" action="action_remnant_category_rule" sequence="30"/>
+</odoo>

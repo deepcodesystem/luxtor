@@ -9,10 +9,17 @@
     <field name="arch" type="xml">
       <xpath expr="//field[@name='order_line']//field[@name='product_template_id']"
              position="after">
+        <field name="bom_id" optional="hide" string="BOM"/>
         <field name="lx_width_m" optional="show" string="W (m)"/>
         <field name="lx_height_m" optional="show" string="H (m)"/>
         <field name="size" optional="show" string="Surface (m²)"/>
+
       </xpath>
+       <xpath expr="//field[@name='product_custom_attribute_value_ids']" position="after">
+            <field name="lx_control_side" optional="hide" string="Control Side"/>
+            <field name="lx_roll_direction" optional="hide" string="Roll Direction"/>
+            <field name="lx_fitting_method" optional="hide" string="Fitting Method"/>
+        </xpath>
     </field>
   </record>
 </odoo>

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_category_sunscreen_test" model="product.category">
+        <field name="name">Sunscreen</field>
+    </record>
+    <record id="product_category_day_night_test" model="product.category">
+        <field name="name">Day &amp; Night</field>
+    </record>
+    <record id="product_category_translucent_test" model="product.category">
+        <field name="name">Translucent</field>
+    </record>
+    <record id="product_category_silhouette_test" model="product.category">
+        <field name="name">Silhouette</field>
+    </record>
+    <record id="product_category_blackout_test" model="product.category">
+        <field name="name">Blackout</field>
+    </record>
+
+    <record id="product_sp_test" model="product.product">
+        <field name="name">SU Sunscreen Fabric</field>
+        <field name="default_code">SU</field>
+        <field name="fabric_color">12</field>
+        <field name="type">consu</field>
+        <field name="categ_id" ref="product_category_sunscreen_test"/>
+    </record>
+    <record id="product_dn_test" model="product.product">
+        <field name="name">DN Test Day &amp; Night Fabric</field>
+        <field name="default_code">DN</field>
+        <field name="type">consu</field>
+        <field name="categ_id" ref="product_category_day_night_test"/>
+    </record>
+    <record id="product_tr_test" model="product.product">
+        <field name="name">TR Test Translucent Fabric</field>
+        <field name="default_code">M14-06</field>
+        <field name="type">consu</field>
+        <field name="categ_id" ref="product_category_translucent_test"/>
+    </record>
+    <record id="product_si_test" model="product.product">
+        <field name="name">SI Test Silhouette Fabric</field>
+        <field name="default_code">SI-TEST</field>
+        <field name="type">consu</field>
+        <field name="categ_id" ref="product_category_silhouette_test"/>
+    </record>
+    <record id="product_bl_test" model="product.product">
+        <field name="name">BL Test Blackout Fabric</field>
+        <field name="default_code">BL-TEST</field>
+        <field name="type">consu</field>
+        <field name="categ_id" ref="product_category_blackout_test"/>
+    </record>
+
+    <record id="remnant_dn_001" model="remnant.stock">
+        <field name="name">R-DN-001</field>
+        <field name="remnant_code">001</field>
+        <field name="product_id" ref="product_dn_test"/>
+        <field name="category_rule_id" ref="rule_day_night"/>
+        <field name="usable_layer_count">2</field>
+        <field name="width_m">1.35</field>
+        <field name="height_m">3.20</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_dn_002" model="remnant.stock">
+        <field name="name">R-DN-002</field>
+        <field name="remnant_code">002</field>
+        <field name="product_id" ref="product_dn_test"/>
+        <field name="category_rule_id" ref="rule_day_night"/>
+        <field name="usable_layer_count">2</field>
+        <field name="width_m">1.48</field>
+        <field name="height_m">3.20</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_dn_003" model="remnant.stock">
+        <field name="name">R-DN-003</field>
+        <field name="remnant_code">003</field>
+        <field name="product_id" ref="product_dn_test"/>
+        <field name="category_rule_id" ref="rule_day_night"/>
+        <field name="usable_layer_count">2</field>
+        <field name="width_m">1.80</field>
+        <field name="height_m">3.20</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_tr_001" model="remnant.stock">
+        <field name="name">R-M14-001</field>
+        <field name="remnant_code">001</field>
+        <field name="product_id" ref="product_tr_test"/>
+        <field name="category_rule_id" ref="rule_translucent"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.18</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_si_001" model="remnant.stock">
+        <field name="name">R-SI-TEST-001</field>
+        <field name="remnant_code">001</field>
+        <field name="product_id" ref="product_si_test"/>
+        <field name="category_rule_id" ref="rule_silhouette"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.25</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_bl_001" model="remnant.stock">
+        <field name="name">R-BL-TEST-001</field>
+        <field name="remnant_code">001</field>
+        <field name="product_id" ref="product_bl_test"/>
+        <field name="category_rule_id" ref="rule_blackout"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.42</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">reserved</field>
+    </record>
+    <record id="remnant_bl_002" model="remnant.stock">
+        <field name="name">R-BL-TEST-002</field>
+        <field name="remnant_code">002</field>
+        <field name="product_id" ref="product_bl_test"/>
+        <field name="category_rule_id" ref="rule_blackout"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.46</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_001" model="remnant.stock">
+        <field name="name">R-SU-12-001</field>
+        <field name="remnant_code">001</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.70</field>
+        <field name="height_m">1.10</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_002" model="remnant.stock">
+        <field name="name">R-SU-12-002</field>
+        <field name="remnant_code">002</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.90</field>
+        <field name="height_m">1.12</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_003" model="remnant.stock">
+        <field name="name">R-SU-12-003</field>
+        <field name="remnant_code">003</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.95</field>
+        <field name="height_m">1.70</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_004" model="remnant.stock">
+        <field name="name">R-SU-12-004</field>
+        <field name="remnant_code">004</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.30</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_005" model="remnant.stock">
+        <field name="name">R-SU-12-005</field>
+        <field name="remnant_code">005</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.82</field>
+        <field name="height_m">1.45</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_006" model="remnant.stock">
+        <field name="name">R-SU-12-006</field>
+        <field name="remnant_code">006</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.05</field>
+        <field name="height_m">1.35</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_007" model="remnant.stock">
+        <field name="name">R-SU-12-007</field>
+        <field name="remnant_code">007</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.15</field>
+        <field name="height_m">1.80</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_008" model="remnant.stock">
+        <field name="name">R-SU-12-008</field>
+        <field name="remnant_code">008</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.42</field>
+        <field name="height_m">1.48</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_009" model="remnant.stock">
+        <field name="name">R-SU-12-009</field>
+        <field name="remnant_code">009</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.55</field>
+        <field name="height_m">1.05</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_010" model="remnant.stock">
+        <field name="name">R-SU-12-010</field>
+        <field name="remnant_code">010</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.65</field>
+        <field name="height_m">1.45</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_011" model="remnant.stock">
+        <field name="name">R-SU-12-011</field>
+        <field name="remnant_code">011</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.85</field>
+        <field name="height_m">1.25</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_012" model="remnant.stock">
+        <field name="name">R-SU-12-012</field>
+        <field name="remnant_code">012</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.78</field>
+        <field name="height_m">2.05</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_013" model="remnant.stock">
+        <field name="name">R-SU-12-013</field>
+        <field name="remnant_code">013</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.25</field>
+        <field name="height_m">2.20</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_014" model="remnant.stock">
+        <field name="name">R-SU-12-014</field>
+        <field name="remnant_code">014</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">2.05</field>
+        <field name="height_m">0.85</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_015" model="remnant.stock">
+        <field name="name">R-SU-12-015</field>
+        <field name="remnant_code">015</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.88</field>
+        <field name="height_m">0.95</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_016" model="remnant.stock">
+        <field name="name">R-SU-12-016</field>
+        <field name="remnant_code">016</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">1.12</field>
+        <field name="height_m">1.12</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_017" model="remnant.stock">
+        <field name="name">R-SU-12-017</field>
+        <field name="remnant_code">017</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.45</field>
+        <field name="height_m">0.80</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_018" model="remnant.stock">
+        <field name="name">R-SU-12-018</field>
+        <field name="remnant_code">018</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.55</field>
+        <field name="height_m">0.95</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_019" model="remnant.stock">
+        <field name="name">R-SU-12-019</field>
+        <field name="remnant_code">019</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.65</field>
+        <field name="height_m">1.05</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_020" model="remnant.stock">
+        <field name="name">R-SU-12-020</field>
+        <field name="remnant_code">020</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.72</field>
+        <field name="height_m">1.25</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_021" model="remnant.stock">
+        <field name="name">R-SU-12-021</field>
+        <field name="remnant_code">021</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.60</field>
+        <field name="height_m">1.60</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+    <record id="remnant_su_022" model="remnant.stock">
+        <field name="name">R-SU-12-022</field>
+        <field name="remnant_code">022</field>
+        <field name="product_id" ref="product_sp_test"/>
+        <field name="category_rule_id" ref="rule_sunscreen"/>
+        <field name="usable_layer_count">1</field>
+        <field name="width_m">0.35</field>
+        <field name="height_m">1.10</field>
+        <field name="location_id" ref="location_wh_remnants"/>
+        <field name="state">available</field>
+    </record>
+</odoo>

@@ -33,6 +33,24 @@
     </field>
   </record>
 
+  <!-- Bouton Sync Attribute Prices -->
+  <record id="view_product_template_lx_sync_button" model="ir.ui.view">
+    <field name="name">product.template.lx_sync_button</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_form_view"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="lx_sync_attribute_prices_from_components"
+                type="object"
+                string="Sync Attribute Prices"
+                class="oe_stat_button"
+                icon="fa-refresh"
+                invisible="not attribute_line_ids"
+                help="Synchronize price_extra of attributes in 'auto' mode from their components"/>
+      </xpath>
+    </field>
+  </record>
+
   <!-- Onglet "Luxtor" sur product.template -->
   <record id="view_product_template_lx_base_form" model="ir.ui.view">
     <field name="name">product.template.lx_base.form</field>

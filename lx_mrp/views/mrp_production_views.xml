@@ -20,6 +20,7 @@
           <field name="lx_control_side" widget="radio" options="{'horizontal': true}"/>
           <field name="lx_roll_direction" widget="radio" options="{'horizontal': true}"/>
           <field name="lx_fitting_method" widget="radio" options="{'horizontal': true}"/>
+        <field name="sale_id"/>
       </xpath>
 
       <!-- Totaux coûts en bas de feuille -->

@@ -1,0 +1,22 @@
+{
+    "name": "Remnant Picking",
+    "summary": "Pick the smallest suitable fabric remnant for roller blind orders.",
+    "version": "19.0.1.0.0",
+    "category": "Inventory/Inventory",
+    "author": "Custom",
+    "license": "LGPL-3",
+    "depends": ["sale_stock", "stock"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/remnant_location_data.xml",
+        "data/remnant_category_rule_data.xml",
+        "data/remnant_stock_test_data.xml",
+        "views/remnant_category_rule_views.xml",
+        "views/remnant_stock_views.xml",
+        "views/remnant_fetch_request_views.xml",
+        "views/sale_order_views.xml",
+        "views/menu_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+}

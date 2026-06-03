@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Héritage du template du configurateur produit -->
+    <template id="product_configurator_configure"
+              inherit_id="sale.product_configurator_configure">
+
+        <!-- Injection des champs dimensions après les attributs existants -->
+        <xpath expr="//div[hasclass('configurator_container')]//div[@id='product_attributes']"
+               position="after">
+
+            <div id="product_dimensions" class="row mt-3">
+                <div class="col-12">
+                    <h5 class="mb-3">Dimensions sur mesure</h5>
+
+                    <div class="row g-3">
+                        <!-- Champ Largeur -->
+                        <div class="col-md-6">
+                            <label for="lx_width_m" class="form-label">
+                                Largeur (mètres)
+                            </label>
+                            <div class="input-group">
+                                <input type="number"
+                                       id="lx_width_m"
+                                       name="lx_width_m"
+                                       class="form-control lx-dimension-input"
+                                       step="0.01"
+                                       min="0.1"
+                                       max="10.0"
+                                       placeholder="Ex: 1.50"
+                                       t-att-value="lx_width_m or ''"
+                                       required="required"/>
+                                <span class="input-group-text">m</span>
+                            </div>
+                            <div class="form-text">Largeur du store en mètres</div>
+                        </div>
+
+                        <!-- Champ Hauteur -->
+                        <div class="col-md-6">
+                            <label for="lx_height_m" class="form-label">
+                                Hauteur (mètres)
+                            </label>
+                            <div class="input-group">
+                                <input type="number"
+                                       id="lx_height_m"
+                                       name="lx_height_m"
+                                       class="form-control lx-dimension-input"
+                                       step="0.01"
+                                       min="0.1"
+                                       max="10.0"
+                                       placeholder="Ex: 2.00"
+                                       t-att-value="lx_height_m or ''"
+                                       required="required"/>
+                                <span class="input-group-text">m</span>
+                            </div>
+                            <div class="form-text">Hauteur du store en mètres</div>
+                        </div>
+                    </div>
+
+                    <!-- Affichage de la surface calculée -->
+                    <div class="mt-2 text-muted" id="surface_calculation" style="display: none;">
+                        Surface: <span id="calculated_surface">0</span> m²
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
