@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_template_lx_ecommerce_user,product.template.lx.ecommerce.user,product.model_product_template,base.group_user,1,0,0,0
+access_product_template_lx_ecommerce_sales_user,product.template.lx.ecommerce.sales.user,product.model_product_template,sales_team.group_sale_salesman,1,1,1,0
+access_product_template_lx_ecommerce_sales_manager,product.template.lx.ecommerce.sales.manager,product.model_product_template,sales_team.group_sale_manager,1,1,1,1

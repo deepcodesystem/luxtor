@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- PRODUCT ATTRIBUTE COMPONENT - Vue liste                            -->
+    <!-- ================================================================== -->
+    <record id="view_product_attribute_component_tree" model="ir.ui.view">
+        <field name="name">product.attribute.component.tree</field>
+        <field name="model">product.attribute.component</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="component_variant_id" options="{'no_create': True}"/>
+                <field name="quantity"/>
+                <field name="component_standard_price" readonly="1"/>
+                <field name="component_waste_rate" readonly="1" optional="hide"/>
+                <field name="component_added_margin" readonly="1" optional="hide"/>
+                <field name="subtotal" readonly="1" optional="hide"/>
+                <field name="amount_with_margins" readonly="1" sum="Total with Margins"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- PRODUCT TEMPLATE ATTRIBUTE VALUE - Extension formulaire            -->
+    <!-- ================================================================== -->
+    <record id="view_product_template_attribute_value_form_lx" model="ir.ui.view">
+        <field name="name">product.template.attribute.value.form.lx</field>
+        <field name="model">product.template.attribute.value</field>
+        <field name="inherit_id" ref="product.product_template_attribute_value_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Après price_extra, ajouter le mode et le prix calculé -->
+            <field name="price_extra" position="after">
+                <field name="lx_price_mode" widget="radio"/>
+                <field name="lx_computed_price"
+                       readonly="1"
+                       invisible="lx_price_mode != 'auto'"
+                       string="Auto Computed Price"/>
+            </field>
+
+            <!-- Ajouter un notebook avec onglet Components -->
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Components" name="lx_components">
+                        <field name="lx_component_ids" context="{'tree_view_ref': 'lx_base.view_product_attribute_component_tree'}"/>
+                        <group>
+                            <group>
+                                <label for="lx_computed_price"
+                                       string="Computed Price (with margins)"/>
+                                <div>
+                                    <field name="lx_computed_price"
+                                           readonly="1"
+                                           class="oe_inline"/>
+                                    <span class="text-muted ms-2">
+                                        (Based on components + waste_rate + added_margin)
+                                    </span>
+                                </div>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- PRODUCT TEMPLATE ATTRIBUTE VALUE - Extension liste                 -->
+    <!-- ================================================================== -->
+    <record id="view_product_template_attribute_value_tree_lx" model="ir.ui.view">
+        <field name="name">product.template.attribute.value.tree.lx</field>
+        <field name="model">product.template.attribute.value</field>
+        <field name="inherit_id" ref="product.product_template_attribute_value_view_tree"/>
+        <field name="arch" type="xml">
+
+            <!-- Ajouter colonne mode prix -->
+            <field name="price_extra" position="after">
+                <field name="lx_price_mode" optional="show"/>
+                <field name="lx_computed_price" optional="hide"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

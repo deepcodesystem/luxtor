@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================================================== -->
+        <!-- ATTRIBUT : Largeur (m)                                             -->
+        <!-- ================================================================== -->
+        <record id="product_attribute_width_m" model="product.attribute">
+            <field name="name">Largeur (m)</field>
+            <field name="display_type">select</field>
+            <field name="create_variant">no_variant</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Valeur custom pour la largeur -->
+        <record id="product_attribute_value_width_custom" model="product.attribute.value">
+            <field name="name">Sur mesure</field>
+            <field name="attribute_id" ref="product_attribute_width_m"/>
+            <field name="is_custom">True</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- ATTRIBUT : Hauteur (m)                                             -->
+        <!-- ================================================================== -->
+        <record id="product_attribute_height_m" model="product.attribute">
+            <field name="name">Hauteur (m)</field>
+            <field name="display_type">select</field>
+            <field name="create_variant">no_variant</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Valeur custom pour la hauteur -->
+        <record id="product_attribute_value_height_custom" model="product.attribute.value">
+            <field name="name">Sur mesure</field>
+            <field name="attribute_id" ref="product_attribute_height_m"/>
+            <field name="is_custom">True</field>
+            <field name="sequence">1</field>
+        </record>
+
+    </data>
+</odoo>

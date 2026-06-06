@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_form_view_lx_service" model="ir.ui.view">
+        <field name="name">product.template.form.lx.service</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="website_sale.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Ajouter le champ "Services Associés" après "Produits Accessoires" -->
+            <xpath expr="//group[@name='upsell']/field[@name='accessory_product_ids']" position="after">
+                <field name="lx_service_product_ids"
+                       widget="many2many_tags"
+                       domain="[('sale_ok', '=', True), ('type', '=', 'service')]"
+                       invisible="not sale_ok"
+                       placeholder="Services associés pour ventes incitatives"
+                       help="Services que le client peut ajouter à son panier depuis le frontend"/>
+            </xpath>
+
+            <!-- Ajouter le champ "Service d'Installation" dans l'onglet Sales -->
+            <xpath expr="//page[@name='general_information']//field[@name='type']" position="after">
+                <field name="lx_is_installation_service"
+                       invisible="type != 'service'"
+                       help="Si coché, la quantité de ce service sera automatiquement synchronisée avec la quantité du produit principal"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
