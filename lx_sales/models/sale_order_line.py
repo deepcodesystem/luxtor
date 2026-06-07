@@ -102,16 +102,33 @@ class SaleOrderLine(models.Model):
 
     @api.depends('lx_width_m', 'lx_height_m', 'product_uom_qty', 'price_unit', 'tax_ids', 'discount')
     def _compute_amount(self):
-        # Déclenche le recalcul quand les dims changent — la vraie logique est dans _prepare_base_line
+        # Le price_unit contient déjà base_price × H × W (via _get_pricelist_price),
+        # donc on utilise product_uom_qty tel quel — PAS de multiplication par size.
         return super()._compute_amount()
 
-    def _prepare_base_line_for_taxes_computation(self, **kwargs):
-        """Pour les produits dimensionnels : quantity = size × product_uom_qty."""
-        self.ensure_one()
-        res = super()._prepare_base_line_for_taxes_computation(**kwargs)
-        if self.size > 0.0:
-            res['quantity'] = self.size * (self.product_uom_qty or 0.0)
-        return res
+    def _get_pricelist_price(self):
+        """Multiplie le prix catalogue par la surface (m²) pour les stores.
+        Lecture : attributs customs d'abord, puis fallback lx_width_m/lx_height_m."""
+        if not self.product_id or not self.product_id.product_tmpl_id.is_dimension_product:
+            return super()._get_pricelist_price()
+
+        height = self._get_dimension_custom_value('lx_base.product_attribute_height_m')
+        width = self._get_dimension_custom_value('lx_base.product_attribute_width_m')
+
+        # Fallback : lire depuis les champs directs si les attributs ne sont pas sync
+        if not height or not width:
+            height = self.lx_height_m or 0.0
+            width = self.lx_width_m or 0.0
+        if not height or not width:
+            return super()._get_pricelist_price()
+
+        if self.order_id.pricelist_id:
+            base_price = self.order_id.pricelist_id._get_product_price(
+                self.product_id, self.product_uom_qty, currency=self.order_id.currency_id
+            )
+        else:
+            base_price = self.product_id.list_price
+        return base_price * height * width
 
     # =========================================================================
     # VALIDATION DIMENSIONS
@@ -199,6 +216,9 @@ class SaleOrderLine(models.Model):
             if not line.product_id.product_tmpl_id.is_dimension_product:
                 continue
             line.lx_validate_dimensions()
+            # Recalculer price_unit quand les dimensions changent
+            if any(k in vals for k in ('lx_width_m', 'lx_height_m')):
+                line.price_unit = line._get_pricelist_price()
         return res
 
     def _get_sale_order_line_configurator_values(self):
@@ -240,6 +260,25 @@ class SaleOrderLine(models.Model):
     # =========================================================================
     # SYNCHRONISATION DIMENSIONS <-> ATTRIBUTS
     # =========================================================================
+
+    def _get_dimension_custom_value(self, attr_xmlid):
+        """Lit la valeur custom d'un attribut dimension depuis la ligne de commande.
+
+        :param attr_xmlid: XML ID complet de l'attribut (ex: 'lx_base.product_attribute_height_m')
+        :return: float or None
+        """
+        self.ensure_one()
+        attr = self.env.ref(attr_xmlid, raise_if_not_found=False)
+        if not attr:
+            return None
+        for custom_val in self.product_custom_attribute_value_ids:
+            ptav = custom_val.custom_product_template_attribute_value_id
+            if ptav.attribute_id == attr:
+                try:
+                    return float(custom_val.custom_value)
+                except (ValueError, TypeError):
+                    return None
+        return None
 
     def _sync_dimensions_from_attributes(self):
         """
