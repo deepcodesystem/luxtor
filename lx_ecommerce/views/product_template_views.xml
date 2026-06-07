@@ -21,6 +21,9 @@
                 <field name="lx_is_installation_service"
                        invisible="type != 'service'"
                        help="Si coché, la quantité de ce service sera automatiquement synchronisée avec la quantité du produit principal"/>
+                <field name="lx_install_free_threshold"
+                       invisible="not lx_is_installation_service"
+                       help="Montant minimum de commande (hors services) pour offrir ce service gratuitement"/>
             </xpath>
         </field>
     </record>

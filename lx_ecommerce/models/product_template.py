@@ -24,3 +24,11 @@ class ProductTemplate(models.Model):
              "avec la quantité du produit principal auquel il est lié. "
              "Le prix total sera donc: prix unitaire × quantité du produit.",
     )
+
+    lx_install_free_threshold = fields.Float(
+        string="Seuil gratuité installation (DH)",
+        default=0.0,
+        help="Montant minimum de la commande (hors services) à partir duquel "
+             "ce service d'installation devient gratuit (prix = 0). "
+             "Laisser 0 pour désactiver.",
+    )

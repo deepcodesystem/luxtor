@@ -43,18 +43,33 @@
                                         t-set="combination_info"
                                         t-value="product._get_combination_info_variant()"
                                     />
-                                    <del
-                                        name="lx_service_list_price"
-                                        t-attf-class="me-2 text-nowrap text-muted {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
-                                        t-out="combination_info['list_price']"
-                                        t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+                                    <t
+                                        t-set="is_install_free"
+                                        t-value="product.product_tmpl_id.lx_is_installation_service and product.product_tmpl_id.lx_install_free_threshold > 0 and website_sale_order and website_sale_order._merch_total_excl_services() >= product.product_tmpl_id.lx_install_free_threshold"
                                     />
-                                    <span
-                                        name="lx_service_price"
-                                        class="text-nowrap"
-                                        t-out="combination_info['price']"
-                                        t-options="{'widget': 'monetary','display_currency': website.currency_id}"
-                                    />
+                                    <t t-if="is_install_free">
+                                        <del
+                                            name="lx_service_list_price"
+                                            class="me-2 text-nowrap text-muted"
+                                            t-out="combination_info['list_price']"
+                                            t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+                                        />
+                                        <span class="text-success fw-bold">Gratuit</span>
+                                    </t>
+                                    <t t-else="">
+                                        <del
+                                            name="lx_service_list_price"
+                                            t-attf-class="me-2 text-nowrap text-muted {{'' if combination_info['has_discounted_price'] else 'd-none'}}"
+                                            t-out="combination_info['list_price']"
+                                            t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
+                                        />
+                                        <span
+                                            name="lx_service_price"
+                                            class="text-nowrap"
+                                            t-out="combination_info['price']"
+                                            t-options="{'widget': 'monetary','display_currency': website.currency_id}"
+                                        />
+                                    </t>
                                 </h6>
                                 <button
                                     class="js_add_suggested_products btn btn-primary text-nowrap"

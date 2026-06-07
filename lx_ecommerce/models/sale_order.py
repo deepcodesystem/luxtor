@@ -6,6 +6,39 @@ from odoo import models
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    def _merch_total_excl_services(self):
+        """Total marchandise hors services d'installation et livraison."""
+        total = 0.0
+        for line in self.order_line:
+            if line.display_type:
+                continue
+            if getattr(line, 'is_delivery', False):
+                continue
+            if line.product_id.product_tmpl_id.lx_is_installation_service:
+                continue
+            total += float(line.price_total or 0.0)
+        return total
+
+    def _reapply_free_install_logic(self):
+        """Vérifie le seuil pour tous les services d'installation de la commande
+        et applique (ou retire) la gratuité via discount=100%."""
+        for line in self.order_line.filtered(
+            lambda l: l.product_id.product_tmpl_id.lx_is_installation_service
+        ):
+            line._apply_free_install_logic()
+
+    def _free_install_status(self):
+        """Retourne un dict {product_id: bool} indiquant si chaque service
+        d'installation est gratuit pour cette commande."""
+        status = {}
+        for line in self.order_line:
+            tmpl = line.product_id.product_tmpl_id
+            if tmpl.lx_is_installation_service:
+                threshold = tmpl.lx_install_free_threshold
+                if threshold:
+                    status[line.product_id.id] = self._merch_total_excl_services() >= threshold
+        return status
+
     def _cart_lx_services(self):
         """Suggest services based on 'Services Associés' of products in cart"""
         product_ids = set(self.website_order_line.product_id.ids)

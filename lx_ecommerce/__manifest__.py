@@ -29,6 +29,11 @@
         'views/product_template_views.xml',
         'views/templates/cart_templates.xml',
     ],
+    'assets': {
+        'web.assets_frontend': [
+            'lx_ecommerce/static/src/js/lx_variant_mixin.js',
+        ],
+    },
     'installable': True,
     'application': False,
     'auto_install': False,
