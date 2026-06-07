@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="product_removal_lx_fabric" model="product.removal">
+    <field name="name">Tissu - Lot forcé</field>
+    <field name="method">fabric_roll</field>
+  </record>
+
+</odoo>

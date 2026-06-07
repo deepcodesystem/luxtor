@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <menuitem id="menu_lx_mrp_scrap"
+            name="Chutes"
+            parent="mrp.menu_mrp_root"
+            action="action_lx_scrap"
+            sequence="50"/>
+
+</odoo>
