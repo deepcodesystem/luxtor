@@ -35,8 +35,6 @@
       <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
         <field name="lx_unit_price" string="Unit Price" optional="show" readonly="1"/>
         <field name="lx_cost_price" string="Cost" optional="show" readonly="1"/>
-        <field name="lx_waste_rate" string="Waste %" optional="show" readonly="1"/>
-        <field name="lx_added_margin" string="Margin %" optional="show" readonly="1"/>
         <field name="lx_amount" string="Amount" optional="show" readonly="1"/>
       </xpath>
     </field>

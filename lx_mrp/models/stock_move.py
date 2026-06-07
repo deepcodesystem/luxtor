@@ -24,22 +24,13 @@ class StockMove(models.Model):
         string='Cost Unit Price',
         compute='_compute_lx_unit_price',
         store=True,
+        help="Coût unitaire ajusté = lx_adjusted_cost du produit (inclut waste_rate + added_margin).",
     )
     lx_cost_price = fields.Monetary(
         string='Cost Price',
         compute='_compute_lx_cost_price',
         store=True,
         currency_field='currency_id',
-    )
-    lx_waste_rate = fields.Float(
-        string='Waste Rate (%)',
-        compute='_compute_lx_rates',
-        store=True,
-    )
-    lx_added_margin = fields.Float(
-        string='Added Margin (%)',
-        compute='_compute_lx_rates',
-        store=True,
     )
     lx_amount = fields.Monetary(
         string='Amount',
@@ -51,27 +42,17 @@ class StockMove(models.Model):
     @api.depends('product_id')
     def _compute_lx_unit_price(self):
         for m in self:
-            m.lx_unit_price = m.product_id.standard_price or 0.0
+            m.lx_unit_price = m.product_id.lx_adjusted_cost or 0.0
 
     @api.depends('lx_unit_price', 'product_uom_qty')
     def _compute_lx_cost_price(self):
         for m in self:
             m.lx_cost_price = _truncate2((m.lx_unit_price or 0.0) * (m.product_uom_qty or 0.0))
 
-    @api.depends('product_id')
-    def _compute_lx_rates(self):
-        for m in self:
-            tmpl = m.product_id.product_tmpl_id
-            m.lx_waste_rate = tmpl.waste_rate if tmpl else 0.0
-            m.lx_added_margin = tmpl.added_margin if tmpl else 0.0
-
-    @api.depends('lx_cost_price', 'lx_waste_rate', 'lx_added_margin')
+    @api.depends('lx_cost_price')
     def _compute_lx_amount(self):
         for m in self:
-            base = float(m.lx_cost_price or 0.0)
-            waste = max(float(m.lx_waste_rate or 0.0) / 100.0, 0.0)
-            margin = max(float(m.lx_added_margin or 0.0) / 100.0, 0.0)
-            m.lx_amount = _truncate2(base * (1.0 + waste + margin))
+            m.lx_amount = m.lx_cost_price or 0.0
 
     @api.model_create_multi
     def create(self, vals_list):

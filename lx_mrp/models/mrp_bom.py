@@ -71,22 +71,13 @@ class MrpBomLine(models.Model):
         string='Unit Price',
         compute='_compute_lx_unit_price',
         store=True,
+        help="Coût unitaire ajusté = lx_adjusted_cost du produit (inclut waste_rate + added_margin).",
     )
     lx_cost_price = fields.Monetary(
         string='Cost Price',
         compute='_compute_lx_cost_price',
         store=True,
         currency_field='currency_id',
-    )
-    lx_waste_rate = fields.Float(
-        string='Waste Rate',
-        compute='_compute_lx_rates',
-        store=True,
-    )
-    lx_added_margin = fields.Float(
-        string='Added Margin',
-        compute='_compute_lx_rates',
-        store=True,
     )
     lx_amount = fields.Monetary(
         string='Amount',
@@ -98,23 +89,18 @@ class MrpBomLine(models.Model):
     @api.depends('product_id')
     def _compute_lx_unit_price(self):
         for line in self:
-            line.lx_unit_price = line.product_id.standard_price or 0.0
+            product = line.product_id
+            if not product and hasattr(line, 'component_template_id') and line.component_template_id:
+                product = line.component_template_id.product_variant_ids[:1]
+            line.lx_unit_price = product.lx_adjusted_cost or 0.0
 
     @api.depends('lx_unit_price', 'product_qty')
     def _compute_lx_cost_price(self):
         for line in self:
             line.lx_cost_price = (line.lx_unit_price or 0.0) * (line.product_qty or 0.0)
 
-    @api.depends('product_id')
-    def _compute_lx_rates(self):
-        for line in self:
-            tmpl = line.product_id.product_tmpl_id
-            line.lx_waste_rate = tmpl.waste_rate if tmpl else 0.0
-            line.lx_added_margin = tmpl.added_margin if tmpl else 0.0
-
-    @api.depends('lx_cost_price', 'lx_waste_rate', 'lx_added_margin')
+    @api.depends('lx_cost_price')
     def _compute_lx_amount(self):
         for line in self:
-            factor = ((line.lx_waste_rate or 0.0) + (line.lx_added_margin or 0.0) + 100) / 100
-            line.lx_amount = (line.lx_cost_price or 0.0) * factor
+            line.lx_amount = line.lx_cost_price or 0.0
 

@@ -12,7 +12,7 @@
       <xpath expr="//field[@name='product_tmpl_id']" position="after">
         <field name="lx_width_m" string="Width (m)"/>
         <field name="lx_height_m" string="Height (m)"/>
-        <field name="lx_orientation" string="Orientation" readonly="1"/>
+        <field name="lx_orientation" string="Orientation"/>
         <field name="lx_roll_width_best" string="Roll Width (m)" readonly="1"/>
       </xpath>
 
