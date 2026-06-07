@@ -12,9 +12,7 @@
                 <field name="component_variant_id" options="{'no_create': True}"/>
                 <field name="quantity"/>
                 <field name="component_standard_price" readonly="1"/>
-                <field name="component_waste_rate" readonly="1" optional="hide"/>
-                <field name="component_added_margin" readonly="1" optional="hide"/>
-                <field name="subtotal" readonly="1" optional="hide"/>
+                <field name="lx_adjusted_cost" readonly="1" optional="hide"/>
                 <field name="amount_with_margins" readonly="1" sum="Total with Margins"/>
             </list>
         </field>
