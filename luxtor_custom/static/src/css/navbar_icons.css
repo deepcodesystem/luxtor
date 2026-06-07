@@ -1,7 +1,0 @@
-.luxtor-track-icon img {
-    transition: transform 0.2s ease-in-out;
-}
-
-.luxtor-track-icon:hover img {
-    transform: scale(1.2);
-}

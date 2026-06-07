@@ -1,5 +1,0 @@
-/* Right-align electric subtotal note rows (bold+italic decorated rows only) */
-.o_list_table tr.o_decoration_bf.o_decoration_it td[name="name"] .o_field_widget {
-    text-align: right;
-    display: block;
-}
