@@ -76,14 +76,6 @@ class MrpProduction(models.Model):
             mo.lx_total_cost_price = sum(float(m.lx_cost_price or 0.0) for m in mo.move_raw_ids)
             mo.lx_total_amount = sum(float(m.lx_amount or 0.0) for m in mo.move_raw_ids)
 
-    # ── Contrainte ────────────────────────────────────────────────────────────
-
-    @api.constrains('product_qty')
-    def _check_qty_is_one(self):
-        for mo in self:
-            if mo.product_qty != 1:
-                raise ValidationError(_("Manufacturing quantity must be exactly 1."))
-
     # =========================================================================
     # HELPERS TISSU
     # =========================================================================
@@ -310,89 +302,17 @@ class MrpProduction(models.Model):
                 except Exception as e:
                     _logger.warning("lx_mrp: cannot zero chain move %s: %s", mv.id, e)
 
-    # =========================================================================
-    # EXPLOSION BoM — SCALING DIMENSIONNEL
-    # =========================================================================
-
-    def _lx_apply_absolute_rules(self, raw_vals_list, width_m=None):
-        """Brackets : qty = floor(((W-0.3)/0.95)+2)."""
-        if not raw_vals_list:
-            return raw_vals_list
-        Product = self.env['product.product']
-        w = float(width_m or 0.0)
-        for vals in raw_vals_list:
-            prod = Product.browse(vals.get('product_id'))
-            tmpl = prod.product_tmpl_id if prod else False
-            if tmpl and getattr(tmpl, 'is_mounting_bracket', False):
-                qty_real = max(math.floor(((w - 0.3) / 0.95) + 2), 0) if w else 0
-                vals['product_uom_qty'] = qty_real
-                qty_snap = max(math.floor(((1.0 - 0.3) / 0.95) + 2), 0)
-                vals['lx_bom_uom_qty'] = qty_snap
-        return raw_vals_list
-
-    def _lx_apply_dimension_scaling(self, raw_vals_list, width_m=None, height_m=None):
-        """
-        Scale les quantités à consommer depuis le snapshot lx_bom_uom_qty.
-
-        Tissu (lx_is_fabric ou roller_width_ids) :
-          widthwise  → qty = Q * H + A
-          heightwise → qty = W - 0.03
-        Composant linéaire (lx_qty_by_width, pas tissu) :
-          qty = snap * W
-        Autres → qty = snap
-        """
-        if not raw_vals_list:
-            return raw_vals_list
-        self.ensure_one()
-        Param = self.env['ir.config_parameter'].sudo()
-        Product = self.env['product.product']
-
-        w = float(width_m or 0.0)
-        h = float(height_m or 0.0)
-        Q = self._lx_get_Q_factor()
-        orientation = self.lx_orientation or 'widthwise'
-
-        for vals in raw_vals_list:
-            prod = Product.browse(vals.get('product_id'))
-            tmpl = prod.product_tmpl_id if prod else False
-            snap = float(vals.get('lx_bom_uom_qty') or vals.get('product_uom_qty') or 0.0)
-
-            if not tmpl:
-                continue
-            if getattr(tmpl, 'is_mounting_bracket', False):
-                continue
-
-            has_w = bool(getattr(tmpl, 'lx_qty_by_width', False))
-            is_fabric = bool(getattr(tmpl, 'lx_is_fabric', False)) or bool(getattr(tmpl, 'roller_width_ids', False))
-
-            if is_fabric:
-                cm = float(getattr(tmpl, 'fabric_allowance', 0.0) or 0.0)
-                if not cm:
-                    cm = float(Param.get_param('luxtor.fabric_allowance_cm', '20') or 20.0)
-                A = cm / 100.0
-                if orientation == 'heightwise':
-                    base = max(w - 0.03, 0.0)
-                else:
-                    base = max(Q * h + A, 0.0)
-                vals['product_uom_qty'] = base
-            elif has_w:
-                vals['product_uom_qty'] = snap * w
-            else:
-                vals['product_uom_qty'] = snap
-
-        return raw_vals_list
+    # Le calcul dimensionnel des quantités (tissu, supports, etc.)
+    # est délégué au module mrp_bom_line_formula_quantity
+    # via le champ quantity_formula sur les lignes de nomenclature.
 
     # =========================================================================
     # RECALCUL SUR MOVES EXISTANTS
     # =========================================================================
 
     def _recalc_to_consume_quantities(self):
-        Param = self.env['ir.config_parameter'].sudo()
         for mo in self:
             w = float(mo.lx_width_m or 0.0)
-            h = float(mo.lx_height_m or 0.0)
-            Q = mo._lx_get_Q_factor()
-            orientation = mo.lx_orientation or 'widthwise'
 
             for m in mo.move_raw_ids:
                 tmpl = m.product_id.product_tmpl_id if m.product_id else False
@@ -400,27 +320,18 @@ class MrpProduction(models.Model):
 
                 if not tmpl:
                     continue
-                # Les chaînes plastiques sont gérées exclusivement par _enforce_plastic_chain_singleton
                 if mo._is_plastic_chain(m.product_id):
                     continue
                 if getattr(tmpl, 'is_mounting_bracket', False):
                     m.product_uom_qty = max(math.floor(((w - 0.3) / 0.95) + 2), 0) if w else 0
                     continue
 
-                has_w = bool(getattr(tmpl, 'lx_qty_by_width', False))
-                is_fabric = bool(getattr(tmpl, 'lx_is_fabric', False)) or bool(getattr(tmpl, 'roller_width_ids', False))
+                # La qte tissu est gérée par le module mrp_bom_line_formula_quantity
+                if bool(getattr(tmpl, 'lx_is_fabric', False)) or bool(getattr(tmpl, 'roller_width_ids', False)):
+                    continue
 
-                if is_fabric:
-                    cm = float(getattr(tmpl, 'fabric_allowance', 0.0) or 0.0)
-                    if not cm:
-                        cm = float(Param.get_param('luxtor.fabric_allowance_cm', '20') or 20.0)
-                    A = cm / 100.0
-                    if orientation == 'heightwise':
-                        base = max(w - 0.03, 0.0)
-                    else:
-                        base = max(Q * h + A, 0.0)
-                    m.product_uom_qty = base
-                elif has_w:
+                has_w = bool(getattr(tmpl, 'lx_qty_by_width', False))
+                if has_w:
                     m.product_uom_qty = snap * w
                 else:
                     m.product_uom_qty = snap
