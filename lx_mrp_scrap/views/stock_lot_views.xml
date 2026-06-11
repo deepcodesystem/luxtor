@@ -12,7 +12,6 @@
           <page string="Rouleau tissu" name="lx_fabric_roll">
             <group>
               <field name="lx_width"/>
-              <field name="lx_cut_direction"/>
               <field name="lx_is_scrap"/>
               <field name="lx_origin_production_id"/>
             </group>

@@ -18,6 +18,7 @@
         'views/stock_lot_views.xml',
         'views/mrp_production_views.xml',
         'views/lx_scrap_views.xml',
+        'views/stock_move_line_views.xml',
         'views/menus.xml',
     ],
     'installable': True,

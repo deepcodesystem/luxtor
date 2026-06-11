@@ -9,11 +9,6 @@ class StockLot(models.Model):
         string="Largeur rouleau (m)",
         digits=(10, 3),
     )
-    lx_cut_direction = fields.Selection(
-        [('free', 'Libre'), ('height_fixed', 'Hauteur fixe')],
-        string="Sens de coupe",
-        default='free',
-    )
     lx_is_scrap = fields.Boolean(
         string="Chute réutilisable",
         default=False,

@@ -12,6 +12,9 @@
         <field name="lx_selected_lot_id"
                optional="show"
                string="Rouleau tissu"/>
+        <field name="lx_orientation"
+               optional="show"
+               string="Sens de coupe"/>
       </xpath>
 
       <!-- Onglet Chutes -->

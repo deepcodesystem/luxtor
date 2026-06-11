@@ -6,4 +6,9 @@
     <field name="method">fabric_roll</field>
   </record>
 
+  <record id="product_removal_lx_fabric_sunscreen" model="product.removal">
+    <field name="name">Tissu - Store screen</field>
+    <field name="method">fabric_roll_sunscreen</field>
+  </record>
+
 </odoo>
