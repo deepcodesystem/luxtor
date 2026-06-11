@@ -9,9 +9,9 @@
 
       <!-- Colonne Rouleau dans la liste des composants -->
       <xpath expr="//page[@name='components']//field[@name='lot_ids']" position="after">
-        <field name="lx_selected_lot_id"
+        <!--<field name="lx_selected_lot_id"
                optional="show"
-               string="Rouleau tissu"/>
+               string="Rouleau tissu"/>-->
         <field name="lx_orientation"
                optional="show"
                string="Sens de coupe"/>
