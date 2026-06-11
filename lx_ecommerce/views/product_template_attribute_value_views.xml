@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_product_template_attribute_value_form_lx_associated" model="ir.ui.view">
+        <field name="name">product.template.attribute.value.form.lx.associated</field>
+        <field name="model">product.template.attribute.value</field>
+        <field name="inherit_id" ref="lx_base.view_product_template_attribute_value_form_lx"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='lx_components']" position="after">
+                <page string="Produits Associés" name="lx_associated_products">
+                    <field name="lx_associated_product_ids"
+                           widget="many2many_tags"
+                           domain="[('sale_ok', '=', True)]"
+                           placeholder="Produits associés suggérés pour cette valeur d'attribut"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
