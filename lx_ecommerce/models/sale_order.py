@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-from odoo import models
+from odoo import models, Command
 
 
 class SaleOrder(models.Model):
@@ -38,6 +38,70 @@ class SaleOrder(models.Model):
                 if threshold:
                     status[line.product_id.id] = self._merch_total_excl_services() >= threshold
         return status
+
+    def _add_associated_products(self, line):
+        if not line or not line.exists() or line.product_uom_qty <= 0 or not line.product_id:
+            return
+        ptavs = line.product_id.product_template_attribute_value_ids
+        associated = self.env['product.product']
+        for ptav in ptavs:
+            associated |= ptav.lx_associated_product_ids
+        for assoc_product in associated:
+            existing = self.order_line.filtered(
+                lambda l: l.product_id == assoc_product
+                and l.linked_line_id == line
+            )
+            if not existing:
+                self.env['sale.order.line'].create({
+                    'order_id': self.id,
+                    'product_id': assoc_product.id,
+                    'product_uom_qty': line.product_uom_qty,
+                    'product_uom_id': assoc_product.uom_id.id,
+                    'price_unit': assoc_product.lst_price,
+                    'tax_ids': [Command.set(assoc_product.taxes_id.filtered(
+                        lambda tax: tax.company_id in (False, self.company_id)
+                    ).ids)],
+                    'linked_line_id': line.id,
+                    'lx_auto_associated_line': True,
+                })
+
+    def _cart_add(self, product_id=0, quantity=1.0, *, uom_id=None, **kwargs):
+        values = super()._cart_add(product_id, quantity, uom_id=uom_id, **kwargs)
+        self._add_associated_products(
+            self.env['sale.order.line'].browse(values.get('line_id'))
+        )
+        return values
+
+    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, **kwargs):
+        values = super()._cart_update(product_id, line_id, add_qty, set_qty, **kwargs)
+        self._add_associated_products(
+            self.env['sale.order.line'].browse(values.get('line_id'))
+        )
+        return values
+
+    def _cart_lx_associated_products(self):
+        """Suggest associated products based on attribute values of products in cart"""
+        product_ids = set(self.website_order_line.product_id.ids)
+        all_associated = self.env['product.product']
+
+        for line in self.website_order_line.filtered('product_id'):
+            ptavs = line.product_id.product_template_attribute_value_ids
+            for ptav in ptavs:
+                associated = ptav.lx_associated_product_ids
+                if associated:
+                    combination = line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids
+                    all_associated |= associated.filtered(lambda p:
+                        p.id not in product_ids
+                        and p._website_show_quick_add()
+                        and p.filtered_domain(self.env['product.product']._check_company_domain(line.company_id))
+                        and p._is_variant_possible(parent_combination=combination)
+                        and (
+                            not self.website_id.prevent_zero_price_sale
+                            or p._get_contextual_price()
+                        )
+                    )
+
+        return random.sample(all_associated, len(all_associated))
 
     def _cart_lx_services(self):
         """Suggest services based on 'Services Associés' of products in cart"""

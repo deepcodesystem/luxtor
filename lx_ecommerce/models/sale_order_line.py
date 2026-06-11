@@ -1,9 +1,14 @@
-# -*- coding: utf-8 -*-
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
+
+    lx_auto_associated_line = fields.Boolean(
+        string="Auto Associated Product",
+        default=False,
+        help="Line auto-added from attribute-based associated products",
+    )
 
     def _apply_free_install_logic(self):
         """Applique (ou retire) la gratuité sur ce service d'installation
@@ -21,19 +26,25 @@ class SaleOrderLine(models.Model):
         elif merch_total < threshold and self.discount >= 100:
             self.with_context(skip_free_install=True).discount = 0.0
 
+    def _is_auto_associated_line(self, line):
+        if not line.linked_line_id or not line.linked_line_id.product_id:
+            return False
+        main_product = line.linked_line_id.product_id
+        for ptav in main_product.product_template_attribute_value_ids:
+            if line.product_id in ptav.lx_associated_product_ids:
+                return True
+        return False
+
     @api.model
     def create(self, vals_list):
-        """
-        Lors de la création d'une ligne, si c'est un service d'installation lié,
-        synchroniser sa quantité avec celle de la ligne liée.
-        """
         lines = super().create(vals_list)
 
         for line in lines:
-            if line.linked_line_id and line.product_id.product_tmpl_id.lx_is_installation_service:
+            if not line.linked_line_id:
+                continue
+            if line.product_id.product_tmpl_id.lx_is_installation_service or line.lx_auto_associated_line:
                 line.product_uom_qty = line.linked_line_id.product_uom_qty
 
-        # Réappliquer la logique de gratuité pour les commandes concernées
         orders = lines.mapped('order_id')
         for order in orders:
             order._reapply_free_install_logic()
@@ -41,10 +52,6 @@ class SaleOrderLine(models.Model):
         return lines
 
     def write(self, vals):
-        """
-        Quand la quantité d'une ligne change, synchroniser automatiquement
-        la quantité des services d'installation liés et réappliquer la gratuité.
-        """
         if self._context.get('skip_free_install'):
             return super().write(vals)
 
@@ -52,33 +59,32 @@ class SaleOrderLine(models.Model):
 
         if 'product_uom_qty' in vals:
             for line in self:
-                installation_services = line.linked_line_ids.filtered(
+                linked = line.linked_line_ids.filtered(
                     lambda l: l.product_id.product_tmpl_id.lx_is_installation_service
+                    or l.lx_auto_associated_line
+                    or self._is_auto_associated_line(l)
                 )
-                if installation_services:
-                    installation_services.with_context(skip_installation_sync=True).write({
+                if linked:
+                    linked.with_context(skip_installation_sync=True).write({
                         'product_uom_qty': line.product_uom_qty
                     })
-
                 line.order_id._reapply_free_install_logic()
 
         return result
 
     def unlink(self):
-        """
-        Quand une ligne produit est supprimée, supprimer aussi ses services liés
-        et réappliquer la logique de gratuité.
-        """
         orders = self.mapped('order_id')
 
-        installation_services = self.env['sale.order.line']
+        to_remove = self.env['sale.order.line']
         for line in self:
-            installation_services |= line.linked_line_ids.filtered(
+            to_remove |= line.linked_line_ids.filtered(
                 lambda l: l.product_id.product_tmpl_id.lx_is_installation_service
+                or l.lx_auto_associated_line
+                or self._is_auto_associated_line(l)
             )
 
-        if installation_services:
-            installation_services.unlink()
+        if to_remove:
+            to_remove.unlink()
 
         result = super().unlink()
 

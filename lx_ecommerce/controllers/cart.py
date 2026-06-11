@@ -17,7 +17,7 @@ class CartLxServices(Cart):
         return order_sudo._free_install_status()
 
     def _render_cart_lines(self, order_sudo):
-        """Helper pour re-render le template cart_lines avec lx_services"""
+        """Helper pour re-render le template cart_lines avec lx_services et lx_associated_products"""
         IrUiView = request.env['ir.ui.view']
         return IrUiView._render_template(
             'website_sale.cart_lines', {
@@ -25,6 +25,7 @@ class CartLxServices(Cart):
                 'date': fields.Date.today(),
                 'suggested_products': order_sudo._cart_accessories(),
                 'lx_services': order_sudo._cart_lx_services(),
+                'lx_associated_products': order_sudo._cart_lx_associated_products(),
                 'lx_free_install_status': order_sudo._free_install_status(),
             }
         )
@@ -44,6 +45,8 @@ class CartLxServices(Cart):
             lx_services = order_sudo._cart_lx_services()
             if 'lx_services' not in response.qcontext:
                 response.qcontext['lx_services'] = lx_services
+            if 'lx_associated_products' not in response.qcontext:
+                response.qcontext['lx_associated_products'] = order_sudo._cart_lx_associated_products()
             response.qcontext['lx_free_install_status'] = order_sudo._free_install_status()
 
         return response

@@ -27,6 +27,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/product_template_views.xml',
+        'views/product_template_attribute_value_views.xml',
         'views/templates/cart_templates.xml',
     ],
     'assets': {
