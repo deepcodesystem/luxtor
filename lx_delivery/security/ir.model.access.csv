@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_delivery_carrier_lx,delivery.carrier.lx,model_delivery_carrier_lx,base.group_user,1,0,0,0
-access_delivery_carrier_lx_manager,delivery.carrier.lx manager,model_delivery_carrier_lx,base.group_system,1,1,1,1
-access_delivery_bracket_lx,delivery.bracket.lx,model_delivery_bracket_lx,base.group_user,1,0,0,0
-access_delivery_bracket_lx_manager,delivery.bracket.lx manager,model_delivery_bracket_lx,base.group_system,1,1,1,1
-access_shipping_rate,shipping.rate,model_shipping_rate,base.group_user,1,0,0,0
-access_shipping_rate_manager,shipping.rate manager,model_shipping_rate,base.group_system,1,1,1,1
-access_sale_order_shipping_wizard,sale.order.shipping.wizard,model_sale_order_shipping_wizard,base.group_user,1,1,1,1
-

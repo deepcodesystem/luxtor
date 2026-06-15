@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <menuitem id="menu_roll_orientation_selector_root" name="Roll Selector" sequence="70"/>
-    <menuitem id="menu_fabric_roll_lots" name="Fabric Roll Lots" parent="menu_roll_orientation_selector_root" action="action_fabric_roll_lots" sequence="10"/>
-    <menuitem id="menu_fabric_pick_options" name="Fabric Pick Options" parent="menu_roll_orientation_selector_root" action="action_fabric_pick_options" sequence="20"/>
-</odoo>
-
