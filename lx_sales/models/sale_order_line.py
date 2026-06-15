@@ -47,7 +47,7 @@ class SaleOrderLine(models.Model):
     )
 
     is_dimension_product = fields.Boolean(
-        related='product_id.product_tmpl_id.is_dimension_product',
+        related='product_id.product_tmpl_id.lx_is_store',
         store=False,
     )
 
@@ -139,7 +139,7 @@ class SaleOrderLine(models.Model):
         Lève UserError si invalide."""
         self.ensure_one()
         tmpl = self.product_id.product_tmpl_id if self.product_id else False
-        if not tmpl or not tmpl.is_dimension_product:
+        if not tmpl or not tmpl.lx_is_store:
             return
 
         w = float(width_m if width_m is not None else (self.lx_width_m or 0.0))
@@ -174,7 +174,7 @@ class SaleOrderLine(models.Model):
         for line, vals in zip(lines, vals_list):
             if not line.product_id:
                 continue
-            if not line.product_id.product_tmpl_id.is_dimension_product:
+            if not line.product_id.product_tmpl_id.lx_is_store:
                 continue
 
             # Synchroniser depuis les attributs custom si pas de valeurs explicites
@@ -196,7 +196,7 @@ class SaleOrderLine(models.Model):
 
             # Ensuite synchroniser les dimensions pour chaque ligne
             for line in self:
-                if line.product_id and line.product_id.product_tmpl_id.is_dimension_product:
+                if line.product_id and line.product_id.product_tmpl_id.lx_is_store:
                     dim_vals = line._sync_dimensions_from_attributes()
                     if dim_vals:
                         _logger.info(f"Syncing dimensions from attributes: {dim_vals}")
@@ -213,7 +213,7 @@ class SaleOrderLine(models.Model):
         for line in self:
             if not line.product_id:
                 continue
-            if not line.product_id.product_tmpl_id.is_dimension_product:
+            if not line.product_id.product_tmpl_id.lx_is_store:
                 continue
             line.lx_validate_dimensions()
             # Recalculer price_unit quand les dimensions changent
@@ -315,7 +315,7 @@ class SaleOrderLine(models.Model):
         si les attributs dimension existent sur le produit.
         """
         self.ensure_one()
-        if not self.product_id or not self.product_id.product_tmpl_id.is_dimension_product:
+        if not self.product_id or not self.product_id.product_tmpl_id.lx_is_store:
             return
 
         width_attr = self.env.ref('lx_base.product_attribute_width_m', raise_if_not_found=False)
