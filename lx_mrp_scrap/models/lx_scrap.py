@@ -8,7 +8,7 @@ class LxScrap(models.Model):
     _order = 'id desc'
 
     name = fields.Char(
-        string="Référence",
+        string="Reference",
         required=True,
         default='/',
     )
@@ -23,34 +23,34 @@ class LxScrap(models.Model):
     )
     product_id = fields.Many2one(
         'product.product',
-        string="Tissu",
+        string="Fabric",
     )
     lx_scrap_width = fields.Float(
-        string="Largeur chute (m)",
+        string="Width Scrap (m)",
         digits=(10, 3),
     )
     lx_scrap_length = fields.Float(
-        string="Longueur chute (m)",
+        string="Height scrap (m)",
         digits=(10, 3),
     )
     lx_scrap_area = fields.Float(
-        string="Surface chute (m²)",
+        string="Scrap Size (m²)",
         digits=(10, 3),
         compute='_compute_area',
         store=True,
     )
     state = fields.Selection(
-        [('available', 'Disponible'),
-         ('used', 'Utilisée'),
-         ('discarded', 'Rebutée')],
-        string="État",
+        [('available', 'Available'),
+         ('used', 'Used'),
+         ('discarded', 'Discarded')],
+        string="Status",
         default='available',
     )
     notes = fields.Text(string="Notes")
     new_lot_id = fields.Many2one(
         'stock.lot',
-        string="Nouveau lot chute",
-        help="Lot créé dans le stock pour cette chute réutilisable",
+        string="New Scrap Lot",
+        help="Batch created in inventory for this reusable scrap",
     )
 
     def action_put_in_stock(self):

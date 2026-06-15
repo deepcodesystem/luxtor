@@ -10,7 +10,7 @@ class StockMove(models.Model):
 
     lx_selected_lot_id = fields.Many2one(
         'stock.lot',
-        string="Rouleau sélectionné",
+        string="Selected roll",
         domain="[('lx_width', '>', 0)]",
     )
     def _prepare_move_line_vals(self, quantity=None, reserved_quant=None):
@@ -21,9 +21,9 @@ class StockMove(models.Model):
         return vals
 
     lx_orientation = fields.Selection([
-        ('widthwise', 'Par largeur'),
-        ('heightwise', 'Par hauteur'),
-    ], string="Sens de coupe")
+        ('widthwise', 'By width'),
+        ('heightwise', 'By Height'),
+    ], string="Cutting direction")
 
     def _lx_find_best_fabric_lot(self):
         """Sélectionne le meilleur lot tissu selon l'ordre de priorité :

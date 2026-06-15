@@ -6,7 +6,7 @@ class StockMoveLine(models.Model):
     _inherit = 'stock.move.line'
 
     lx_lot_width = fields.Float(
-        string="Largeur rouleau (m)",
+        string="Roll width (m)",
         digits=(10, 3),
     )
 

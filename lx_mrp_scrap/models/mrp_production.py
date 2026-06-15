@@ -11,7 +11,7 @@ class MrpProduction(models.Model):
     lx_scrap_ids = fields.One2many(
         'lx.scrap',
         'production_id',
-        string="Chutes générées",
+        string="Generated Scraps",
     )
 
     def _get_move_raw_values(self, product, product_uom_qty, product_uom, operation_id=False, bom_line=False):
