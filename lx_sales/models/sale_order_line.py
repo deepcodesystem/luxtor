@@ -109,7 +109,7 @@ class SaleOrderLine(models.Model):
     def _get_pricelist_price(self):
         """Multiplie le prix catalogue par la surface (m²) pour les stores.
         Lecture : attributs customs d'abord, puis fallback lx_width_m/lx_height_m."""
-        if not self.product_id or not self.product_id.product_tmpl_id.is_dimension_product:
+        if not self.product_id or not self.product_id.product_tmpl_id.lx_is_store:
             return super()._get_pricelist_price()
 
         height = self._get_dimension_custom_value('lx_base.product_attribute_height_m')
